@@ -10,7 +10,7 @@ class MyScaffold extends StatelessWidget {
       // Column is 垂直方向的线性布局.
       child: new Scaffold(
           appBar: AppBar(
-            title: Text("Rock"),
+            title: Text("Ro"),
           ),
           body: Parent(),
       ),

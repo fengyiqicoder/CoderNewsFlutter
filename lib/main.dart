@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'BlockPage.dart';
 
 class MyScaffold extends StatelessWidget {
   @override
@@ -9,10 +10,10 @@ class MyScaffold extends StatelessWidget {
     return new Material(
       // Column is 垂直方向的线性布局.
       child: new Scaffold(
-          appBar: AppBar(
-            title: Text("Rocker"),
-          ),
-          body: Parent(),
+        appBar: AppBar(
+          title: Text("Rocker"),
+        ),
+        body: Parent(),
       ),
     );
   }
@@ -45,6 +46,7 @@ class CounterWidget extends StatefulWidget {
     Key key,
     this.initValue: 0,
   });
+
   final int initValue;
 
   @override
@@ -146,6 +148,7 @@ class TapboxB extends StatefulWidget {
 
   bool active;
   ValueChanged<bool> tapHandler;
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -155,6 +158,7 @@ class TapboxB extends StatefulWidget {
 
 class TapboxBState extends State<TapboxB> {
   bool highLight = false;
+
   void tap() {
     widget.tapHandler(!widget.active);
   }
@@ -199,9 +203,9 @@ class TapboxBState extends State<TapboxB> {
           color: widget.active ? Colors.lightBlue : Colors.grey,
           border: highLight
               ? new Border.all(
-                  color: Colors.teal[700],
-                  width: 10.0,
-                )
+            color: Colors.teal[700],
+            width: 10.0,
+          )
               : null,
         ),
       ),
@@ -242,7 +246,7 @@ class TapboxAState extends State<TapboxA> {
         width: 200,
         height: 200,
         decoration:
-            BoxDecoration(color: _active ? Colors.lightBlue : Colors.grey),
+        BoxDecoration(color: _active ? Colors.lightBlue : Colors.grey),
       ),
     );
   }
@@ -336,6 +340,8 @@ class _InfiniteListViewState extends State<InfiniteListView> {
 void main() {
   runApp(new MaterialApp(
     title: 'My app', // used by the OS task switcher
-    home: new MyScaffold(),
+//    home: new MyScaffold(),
+    home: BlockPage(),
   ));
 }
+

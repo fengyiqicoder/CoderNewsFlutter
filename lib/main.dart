@@ -9,25 +9,10 @@ class MyScaffold extends StatelessWidget {
     return new Material(
       // Column is 垂直方向的线性布局.
       child: new Scaffold(
-//          appBar: AppBar(
-//            title: Text("Rock"),
-//          ),
-          body: new StaggeredGridView.countBuilder(
-            crossAxisCount: 5,
-            itemCount: 9,
-            itemBuilder: (BuildContext context, int index) => new Container(
-                color: Colors.green,
-                child: new Center(
-                  child: new CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: new Text('$index'),
-                  ),
-                )),
-            staggeredTileBuilder: (int index) =>
-            new StaggeredTile.count(2, index.isEven ? 2 : 1),
-            mainAxisSpacing: 4.0,
-            crossAxisSpacing: 4.0,
+          appBar: AppBar(
+            title: Text("Rock"),
           ),
+          body: Parent(),
       ),
     );
   }

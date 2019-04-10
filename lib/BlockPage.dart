@@ -3,7 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:math';
 
 const BlockTitleTextStyle = TextStyle(
-  fontSize: 30,
+  fontSize: 22,
   color: Colors.white,
 ); // TextStyle
 
@@ -30,11 +30,12 @@ class _BlockPageState extends State<BlockPage> {
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
         staggeredTiles: counter?_staggeredTitles:_staggeredTitles1, //the style of the blocks
-        children: counter?titles:changedtitles, // the information of the blocks
+        children: counter?titles:changedTitles, // the information of the blocks
         mainAxisSpacing: 12.0,
         crossAxisSpacing: 12.0,
-        padding: EdgeInsets.symmetric(vertical: 30,horizontal: 8)
+        padding: EdgeInsets.symmetric(vertical: 78,horizontal: 8)
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: onTapFloatButton,
         child: Icon(Icons.refresh),
@@ -141,7 +142,7 @@ List<Widget> titles = <Widget>[
   _Blocks(3,titlestext[2],"images/bgpic3.jpeg"),
 ];
 
-List<Widget> changedtitles = <Widget>[
+List<Widget> changedTitles = <Widget>[
   _Blocks(0,titlestext[1],"images/bgpic0.jpg"),
   _Blocks(1,titlestext[2],"images/bgpic1.png"),
   _Blocks(2,titlestext[0],"images/bgpic2.jpg"),

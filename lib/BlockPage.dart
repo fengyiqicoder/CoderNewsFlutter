@@ -30,7 +30,7 @@ class _BlockPageState extends State<BlockPage> {
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
         staggeredTiles: _staggeredTitles,
-        children: titles,
+        children: counter?titles:changedtitles,
         mainAxisSpacing: 12.0,
         crossAxisSpacing: 12.0,
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 8)
@@ -43,7 +43,11 @@ class _BlockPageState extends State<BlockPage> {
     );
   }
 
-  void onTapFloatButton () => print("refresh news");
+  void onTapFloatButton () {
+    this.setState((){
+      counter = !counter;
+    });
+  }
 }
 
 class _Blocks extends StatelessWidget {
@@ -58,19 +62,9 @@ class _Blocks extends StatelessWidget {
     // TODO: implement build
     return new GestureDetector(
       child: Container(
-        decoration: new BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [BlockShadow],
-        ),
+        decoration: PicBoxDecoration(bgPic),
         child: new Container(
-          decoration: new BoxDecoration(
-            color: Color.fromRGBO(14, 14, 14, 0.3), //this is the color between the image and text
-            borderRadius: BorderRadius.circular(20),
-          ),
+          decoration: TextBoxDecoration(bgPic),
           child: new Container(
             child: Text(
               newsTitle,
@@ -91,6 +85,38 @@ class _Blocks extends StatelessWidget {
   }
 }
 
+BoxDecoration PicBoxDecoration(bgPic){
+  if(bgPic == null){
+    return new BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [BlockShadow],
+      color: Colors.pinkAccent,
+    );
+  }
+  else{
+    return new BoxDecoration(
+      image: DecorationImage(
+        image: AssetImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
+        fit: BoxFit.cover,
+      ),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [BlockShadow],
+    );
+  }
+}
+
+BoxDecoration TextBoxDecoration(bgPic){
+  if(bgPic == null){
+    return BoxDecoration();
+  }
+  else{
+    return new BoxDecoration(
+      color: Color.fromRGBO(14, 14, 14, 0.3), //this is the color between the image and text
+      borderRadius: BorderRadius.circular(20),
+    );
+  }
+}
+
 List<StaggeredTile> _staggeredTitles = <StaggeredTile>[
   StaggeredTile.count(2, 1),
   StaggeredTile.count(1, 2),
@@ -98,11 +124,20 @@ List<StaggeredTile> _staggeredTitles = <StaggeredTile>[
   StaggeredTile.count(1, 1),
 ];
 
+bool counter = true;
+
 List<Widget> titles = <Widget>[
-  _Blocks(0,titlestext[3],"images/bgpic0.jpg"),
-  _Blocks(1,"this is the fucking title","images/bgpic1.png"),
-  _Blocks(2,"this is the fucking title","images/bgpic2.jpg"),
-  _Blocks(3,"this is the fucking title","images/bgpic3.jpeg"),
+  _Blocks(0,titlestext[3],null),
+  _Blocks(1,titlestext[0],"images/bgpic1.png"),
+  _Blocks(2,titlestext[1],"images/bgpic2.jpg"),
+  _Blocks(3,titlestext[2],"images/bgpic3.jpeg"),
+];
+
+List<Widget> changedtitles = <Widget>[
+  _Blocks(0,titlestext[1],"images/bgpic0.jpg"),
+  _Blocks(1,titlestext[2],"images/bgpic1.png"),
+  _Blocks(2,titlestext[0],"images/bgpic2.jpg"),
+  _Blocks(3,titlestext[3],"images/bgpic3.jpeg"),
 ];
 
 List<String> titlestext = <String>[

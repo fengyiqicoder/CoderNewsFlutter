@@ -29,8 +29,8 @@ class _BlockPageState extends State<BlockPage> {
     return new Scaffold(
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
-        staggeredTiles: _staggeredTitles,
-        children: counter?titles:changedtitles,
+        staggeredTiles: counter?_staggeredTitles:_staggeredTitles1, //the style of the blocks
+        children: counter?titles:changedtitles, // the information of the blocks
         mainAxisSpacing: 12.0,
         crossAxisSpacing: 12.0,
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 8)
@@ -76,12 +76,13 @@ class _Blocks extends StatelessWidget {
           ),
         ),
       ),
-      onTap: onBlocksTap,
+      onTap: (){
+        Navigator.push(context,
+        new MaterialPageRoute(builder: (context) {
+          return new BlocksTapRoute(id);
+        }));
+      },
     );
-  }
-
-  void onBlocksTap(){
-    print("This is the $id block");
   }
 }
 
@@ -90,7 +91,7 @@ BoxDecoration PicBoxDecoration(bgPic){
     return new BoxDecoration(
       borderRadius: BorderRadius.circular(20),
       boxShadow: [BlockShadow],
-      color: Colors.pinkAccent,
+      color: Colors.pinkAccent, //if the pic is null use the colors
     );
   }
   else{
@@ -107,7 +108,7 @@ BoxDecoration PicBoxDecoration(bgPic){
 
 BoxDecoration TextBoxDecoration(bgPic){
   if(bgPic == null){
-    return BoxDecoration();
+    return BoxDecoration(); // non pic without color
   }
   else{
     return new BoxDecoration(
@@ -121,6 +122,13 @@ List<StaggeredTile> _staggeredTitles = <StaggeredTile>[
   StaggeredTile.count(2, 1),
   StaggeredTile.count(1, 2),
   StaggeredTile.count(1, 1),
+  StaggeredTile.count(1, 1),
+];
+
+List<StaggeredTile> _staggeredTitles1 = <StaggeredTile>[
+  StaggeredTile.count(1, 1),
+  StaggeredTile.count(1, 2),
+  StaggeredTile.count(1, 2),
   StaggeredTile.count(1, 1),
 ];
 
@@ -146,3 +154,29 @@ List<String> titlestext = <String>[
   "do you fell cold and lost in desperation?",
   "you build up hope and failures all you know,remember all the sadness and frustration,and let it go,let it go"
 ];
+
+class BlocksTapRoute extends StatefulWidget{
+  BlocksTapRoute(this.id);
+
+  var id;
+  @override
+  State<StatefulWidget> createState() => new _BlocksTapRouteState(id);
+
+}
+
+class _BlocksTapRouteState extends State<BlocksTapRoute>{
+  _BlocksTapRouteState(this.id);
+
+  var id;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return new Scaffold(
+      body: Center(
+        child: Text(id.toString()),
+      ),
+    );
+  }
+
+}

@@ -28,7 +28,7 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
   List<Widget> currentWidgets = titles ;
   @override
   Widget build(BuildContext context) {
-
+    print("Building Page");
     return new Scaffold(
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
@@ -50,9 +50,10 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
 
   void onTapFloatButton () {
     //在这里获取数据
-    this.setState((){
-      getDatasForView();
-    });
+    print("tappingButton");
+//    this.setState((){
+    getDatasForView();
+//    });
   }
 
   void getDatasForView() async {
@@ -60,6 +61,11 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
     var widgetList = model.getWidgets(tileList.length);
     currentWidgets = await widgetList;//更新数据
     currentTile = tileList;
+    print("DataLanding");
+    this.setState((){
+      //刷新页面
+      print("updateViews");
+    });
   }
 }
 

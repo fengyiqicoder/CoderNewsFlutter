@@ -126,7 +126,7 @@ BoxDecoration PicBoxDecoration(bgPic){
   else{
     return new BoxDecoration(
       image: DecorationImage(
-        image: AssetImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
+        image: NetworkImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
         fit: BoxFit.cover,
       ),
       borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
@@ -165,9 +165,9 @@ List<StaggeredTile> _staggeredTitles1 = <StaggeredTile>[
 
 List<Widget> titles = <Widget>[
   Blocks(0,titlestext[3],null),
-  Blocks(1,titlestext[0],"images/bgpic1.png"),
-  Blocks(2,titlestext[1],"images/bgpic2.jpg"),
-  Blocks(3,titlestext[2],"images/bgpic3.jpeg"),
+  Blocks(1,titlestext[0],null),
+  Blocks(2,titlestext[1],null),
+  Blocks(3,titlestext[2],null),
 ];
 
 List<Widget> changedtitles = <Widget>[

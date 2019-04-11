@@ -1,59 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'dart:math';
+import 'Network.dart';
+import 'MainScreenModel.dart';
+import 'Constants.dart';
 
 const BlockTitleTextStyle = TextStyle(
-  fontSize: 30,
+  fontSize: 22,
   color: Colors.white,
 ); // TextStyle
 
 const BlockShadow = BoxShadow(
-    color:Colors.black54,
-    offset: Offset(4.0,4.0),
-    blurRadius: 8.0
+    color:Colors.black38,
+    offset: Offset(2.0,2.0),
+    blurRadius: 4.0
 );
 
-class DefaultTheme {
-  static const buttomColor = Colors.pinkAccent;
-}
+//数据控制
+var model = MainModel();
 
 class BlockPage extends StatefulWidget {
   @override
-  _BlockPageState createState() => new _BlockPageState();
+  BlockPageState createState() => new BlockPageState();
 }
 
-class _BlockPageState extends State<BlockPage> {
+class BlockPageState extends State<BlockPage> {//从Model获取数据进行展示
+  List<StaggeredTile> currentTile = _staggeredTitles ;
+  List<Widget> currentWidgets = titles ;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+
     return new Scaffold(
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
-        staggeredTiles: counter?_staggeredTitles:_staggeredTitles1, //the style of the blocks
-        children: counter?titles:changedtitles, // the information of the blocks
-        mainAxisSpacing: 12.0,
-        crossAxisSpacing: 12.0,
+        staggeredTiles: currentTile, //the style of the blocks
+        children: currentWidgets, // the information of the blocks
+        controller: ScrollController(initialScrollOffset: 0.0,keepScrollOffset: false),
+        scrollDirection: Axis.vertical,
+        mainAxisSpacing: ConstantsForTile.axiaGap,
+        crossAxisSpacing: ConstantsForTile.axiaGap,
         padding: EdgeInsets.symmetric(vertical: 30,horizontal: 8)
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: onTapFloatButton,
         child: Icon(Icons.refresh),
-        backgroundColor: DefaultTheme.buttomColor,
+        backgroundColor: Colors.pink,
       ),
     );
   }
 
   void onTapFloatButton () {
+    //在这里获取数据
     this.setState((){
-      counter = !counter;
+      getDatasForView();
     });
+  }
+
+  void getDatasForView() async {
+    var tileList = model.getATileList();
+    var widgetList = model.getWidgets(tileList.length);
+    currentWidgets = await widgetList;//更新数据
+    currentTile = tileList;
   }
 }
 
-class _Blocks extends StatelessWidget {
-  _Blocks(this.id, this.newsTitle, this.bgPic);
+class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这个tile
+  Blocks(this.url, this.newsTitle, this.bgPic);
 
-  var id;
+  Blocks.withJson(Map jsonData){
+    url = jsonData["infoId__url"];
+    newsTitle = jsonData["infoId__title"];
+    var picString = jsonData["infoId__imageURL"];
+//    print(picString == "nil");
+    bgPic = picString == "nil" ? null : picString ;
+  }
+
+  var url;
   var newsTitle;
   var bgPic;
 
@@ -70,16 +91,16 @@ class _Blocks extends StatelessWidget {
               newsTitle,
               style: BlockTitleTextStyle,
               overflow: TextOverflow.ellipsis,
-              maxLines: 5,
+              maxLines: ConstantsForTile.textMaxLine,
             ),
             padding: EdgeInsets.all(10),
           ),
         ),
       ),
       onTap: (){
-        Navigator.push(context,
+        Navigator.push(context,//进入下一个页面
         new MaterialPageRoute(builder: (context) {
-          return new BlocksTapRoute(id);
+          return new BlocksTapRoute(url);
         }));
       },
     );
@@ -88,10 +109,12 @@ class _Blocks extends StatelessWidget {
 
 BoxDecoration PicBoxDecoration(bgPic){
   if(bgPic == null){
+    //获取一些颜色
+    var color = model.getATileColor();
     return new BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
       boxShadow: [BlockShadow],
-      color: Colors.pinkAccent, //if the pic is null use the colors
+      color: color, //if the pic is null use the colors
     );
   }
   else{
@@ -100,7 +123,7 @@ BoxDecoration PicBoxDecoration(bgPic){
         image: AssetImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
         fit: BoxFit.cover,
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
       boxShadow: [BlockShadow],
     );
   }
@@ -113,7 +136,7 @@ BoxDecoration TextBoxDecoration(bgPic){
   else{
     return new BoxDecoration(
       color: Color.fromRGBO(14, 14, 14, 0.3), //this is the color between the image and text
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
     );
   }
 }
@@ -132,20 +155,20 @@ List<StaggeredTile> _staggeredTitles1 = <StaggeredTile>[
   StaggeredTile.count(1, 1),
 ];
 
-bool counter = true;
+
 
 List<Widget> titles = <Widget>[
-  _Blocks(0,titlestext[3],null),
-  _Blocks(1,titlestext[0],"images/bgpic1.png"),
-  _Blocks(2,titlestext[1],"images/bgpic2.jpg"),
-  _Blocks(3,titlestext[2],"images/bgpic3.jpeg"),
+  Blocks(0,titlestext[3],null),
+  Blocks(1,titlestext[0],"images/bgpic1.png"),
+  Blocks(2,titlestext[1],"images/bgpic2.jpg"),
+  Blocks(3,titlestext[2],"images/bgpic3.jpeg"),
 ];
 
 List<Widget> changedtitles = <Widget>[
-  _Blocks(0,titlestext[1],"images/bgpic0.jpg"),
-  _Blocks(1,titlestext[2],"images/bgpic1.png"),
-  _Blocks(2,titlestext[0],"images/bgpic2.jpg"),
-  _Blocks(3,titlestext[3],"images/bgpic3.jpeg"),
+  Blocks(0,titlestext[1],"images/bgpic0.jpg"),
+  Blocks(1,titlestext[2],"images/bgpic1.png"),
+  Blocks(2,titlestext[0],"images/bgpic2.jpg"),
+  Blocks(3,titlestext[3],"images/bgpic3.jpeg"),
 ];
 
 List<String> titlestext = <String>[

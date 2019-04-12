@@ -28,7 +28,7 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
   List<Widget> currentWidgets = titles ;
   @override
   Widget build(BuildContext context) {
-
+    print("Building Page");
     return new Scaffold(
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
@@ -50,9 +50,10 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
 
   void onTapFloatButton () {
     //在这里获取数据
-    this.setState((){
-      getDatasForView();
-    });
+    print("tappingButton");
+//    this.setState((){
+    getDatasForView();
+//    });
   }
 
   void getDatasForView() async {
@@ -60,6 +61,11 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
     var widgetList = model.getWidgets(tileList.length);
     currentWidgets = await widgetList;//更新数据
     currentTile = tileList;
+    print("DataLanding");
+    this.setState((){
+      //刷新页面
+      print("updateViews");
+    });
   }
 }
 
@@ -120,7 +126,7 @@ BoxDecoration PicBoxDecoration(bgPic){
   else{
     return new BoxDecoration(
       image: DecorationImage(
-        image: AssetImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
+        image: NetworkImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
         fit: BoxFit.cover,
       ),
       borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
@@ -159,9 +165,9 @@ List<StaggeredTile> _staggeredTitles1 = <StaggeredTile>[
 
 List<Widget> titles = <Widget>[
   Blocks(0,titlestext[3],null),
-  Blocks(1,titlestext[0],"images/bgpic1.png"),
-  Blocks(2,titlestext[1],"images/bgpic2.jpg"),
-  Blocks(3,titlestext[2],"images/bgpic3.jpeg"),
+  Blocks(1,titlestext[0],null),
+  Blocks(2,titlestext[1],null),
+  Blocks(3,titlestext[2],null),
 ];
 
 List<Widget> changedtitles = <Widget>[

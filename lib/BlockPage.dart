@@ -78,11 +78,14 @@ class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这�
     var picString = jsonData["infoId__imageURL"];
 //    print(picString == "nil");
     bgPic = picString == "nil" ? null : picString ;
+    var tagName = jsonData["infoId__categorys"];
+    tagsArray.add(tagName);
   }
 
   var url;
   var newsTitle;
   var bgPic;
+  List<String> tagsArray = [];
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +96,22 @@ class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这�
         child: new Container(
           decoration: TextBoxDecoration(bgPic),
           child: new Container(
-            child: Text(
-              newsTitle,
-              style: BlockTitleTextStyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: ConstantsForTile.textMaxLine,
+            child: Stack(
+              children: <Widget>[
+                Text(
+                  newsTitle,
+                  style: BlockTitleTextStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: ConstantsForTile.textMaxLine,
+                ),
+                Positioned(
+                  child: Row(
+                    children: BlockKeyWords(tagsArray),
+                  ),
+                  bottom: 0.2,
+                  right: 0.2,
+                ),
+              ],
             ),
             padding: EdgeInsets.all(10),
           ),
@@ -111,6 +125,28 @@ class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这�
       },
     );
   }
+}
+
+
+List<Widget> BlockKeyWords (List<String> keywordArray){
+  List<Widget> keyWordList = [];
+  for (var tagName in keywordArray){
+    var widget = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(21),
+        color: Color.fromRGBO(96, 98, 92, 0.6),
+      ),
+      height: 21,
+      child:Center(child: Text(tagName,
+          style: TextStyle(
+            color: Colors.white70,
+          )),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8),
+    );
+    keyWordList.add(widget);
+  }
+  return keyWordList;
 }
 
 BoxDecoration PicBoxDecoration(bgPic){

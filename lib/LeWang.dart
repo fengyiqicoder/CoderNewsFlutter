@@ -67,11 +67,22 @@ class _Blocks extends StatelessWidget {
         child: new Container(
           decoration: TextBoxDecoration(bgPic),
           child: new Container(
-            child: Text(
-              newsTitle,
-              style: BlockTitleTextStyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 5,
+            child: Stack(
+              children: <Widget>[
+                Text(
+                  newsTitle,
+                  style: BlockTitleTextStyle,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 5,
+                ),
+                Positioned(
+                  child: Row(
+                    children: BlockKeyWords("keyWord0", "keyWord1"),
+                  ),
+                  bottom: 0.2,
+                  right: 0.2,
+                ),
+              ],
             ),
             padding: EdgeInsets.all(10),
           ),
@@ -85,6 +96,40 @@ class _Blocks extends StatelessWidget {
       },
     );
   }
+}
+
+List<Widget> BlockKeyWords (keyWord0,keyWord1){
+  return <Widget>[
+    Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(21),
+        color: Color.fromRGBO(96, 98, 92, 0.6),
+      ),
+      height: 21,
+      child:Center(child: Text(keyWord0.toString(),
+          style: TextStyle(
+            color: Colors.white70,
+          )),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8),
+    ),
+    Container(
+      width: 4,
+    ),
+    Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(21),
+        color: Color.fromRGBO(96, 98, 92, 0.6),
+      ),
+      height: 21,
+      child:Center(child: Text(keyWord1.toString(),
+          style: TextStyle(
+            color: Colors.white70,
+          )),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 8),
+    )
+  ];
 }
 
 BoxDecoration PicBoxDecoration(bgPic){

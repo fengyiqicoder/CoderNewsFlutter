@@ -41,7 +41,7 @@ class MainModel{
     List<Widget> result = [];
     for (var data in jsonArray){
       //队首进行更新 只能处理单个标签的情况
-      var tagName = data["infoId__categorys"];
+      var tagName = data["infoId__category"];
       for (var index = 0;index < currentCategoryArray.length;index++){
         var categoryName = currentCategoryArray[index];
         if (categoryName == tagName) {

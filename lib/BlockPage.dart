@@ -78,7 +78,7 @@ class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这�
     var picString = jsonData["infoId__imageURL"];
 //    print(picString == "nil");
     bgPic = picString == "nil" ? null : picString ;
-    var tagName = jsonData["infoId__categorys"];
+    var tagName = jsonData["infoId__category"];
     tagsArray.add(tagName);
   }
 

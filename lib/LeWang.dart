@@ -61,7 +61,7 @@ class _Blocks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //使用FadeInImage
+    //把之前的DecorationBox换成FadeInImage提示图片获取效果
     //方法:因为FadeInImage是Widget而不是decoration所以要用Stack布局
     //先判断图片Url是否为Nil如果为nil的话返回decoration如果不为Nil的话返回FadeInImage
     //PS:把id改成URL 并且对url进行判断

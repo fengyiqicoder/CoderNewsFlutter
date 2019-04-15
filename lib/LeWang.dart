@@ -53,7 +53,6 @@ class _BlockPageState extends State<BlockPage> {
 }
 
 class _Blocks extends StatelessWidget {
-  //改为StatefulWidget 用一个Bool控制两种状态 1.加载中...(做一个背景色中间加一个旋转圆圈) 2.展示信息
   _Blocks(this.id, this.newsTitle, this.bgPic);
 
   var id;
@@ -62,7 +61,10 @@ class _Blocks extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    //使用FadeInImage
+    //方法:因为FadeInImage是Widget而不是decoration所以要用Stack布局
+    //先判断图片Url是否为Nil如果为nil的话返回decoration如果不为Nil的话返回FadeInImage
+    //PS:把id改成URL 并且对url进行判断
     return new GestureDetector(
       child: Container(
         decoration: PicBoxDecoration(bgPic),

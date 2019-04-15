@@ -65,6 +65,8 @@ class _Blocks extends StatelessWidget {
     //方法:因为FadeInImage是Widget而不是decoration所以要用Stack布局
     //先判断图片Url是否为Nil如果为nil的话返回decoration如果不为Nil的话返回FadeInImage
     //PS:把id改成URL 并且对url进行判断
+    //网站: https://docs.flutter.io/flutter/widgets/FadeInImage-class.html
+    //https://flutterchina.club/cookbook/images/fading-in-images/
     return new GestureDetector(
       child: Container(
         decoration: PicBoxDecoration(bgPic),

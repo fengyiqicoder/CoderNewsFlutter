@@ -19,16 +19,35 @@ const BlockShadow = BoxShadow(
 var model = MainModel();
 
 class BlockPage extends StatefulWidget {
+
+  const BlockPage({Key key});
+
   @override
-  BlockPageState createState() => new BlockPageState();
+  BlockPageState createState() {
+    print("CreateState");
+    return new BlockPageState();
+  }
 }
 
 class BlockPageState extends State<BlockPage> {//从Model获取数据进行展示
-  List<StaggeredTile> currentTile = _staggeredTitles ;
-  List<Widget> currentWidgets = titles ;
+  List<StaggeredTile> currentTile = [] ;
+  List<Widget> currentWidgets = [] ;
+
+  @override
+  void initState() {
+    print("initState");
+    super.initState();
+    //在这里获取网络数据
+    getDatasForView();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     print("Building Page");
+    if (currentTile == []){
+      return Scaffold();//return emtry views
+    }
     return new Scaffold(
       body: new StaggeredGridView.count(
         crossAxisCount: 2,
@@ -51,9 +70,7 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
   void onTapFloatButton () {
     //在这里获取数据
     print("tappingButton");
-//    this.setState((){
     getDatasForView();
-//    });
   }
 
   void getDatasForView() async {
@@ -67,6 +84,7 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
       print("updateViews");
     });
   }
+
 }
 
 class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这个tile

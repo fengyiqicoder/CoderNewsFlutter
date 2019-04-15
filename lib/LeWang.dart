@@ -25,6 +25,7 @@ class BlockPage extends StatefulWidget {
 class _BlockPageState extends State<BlockPage> {
   @override
   Widget build(BuildContext context) {
+    print("BuildingState");
     // TODO: implement build
     return new Scaffold(
       body: new StaggeredGridView.count(
@@ -52,6 +53,7 @@ class _BlockPageState extends State<BlockPage> {
 }
 
 class _Blocks extends StatelessWidget {
+  //改为StatefulWidget 用一个Bool控制两种状态 1.加载中...(做一个背景色中间加一个旋转圆圈) 2.展示信息
   _Blocks(this.id, this.newsTitle, this.bgPic);
 
   var id;

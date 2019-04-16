@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'Network.dart';
 import 'MainScreenModel.dart';
 import 'Constants.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 const BlockTitleTextStyle = TextStyle(
   fontSize: 22,
@@ -24,7 +25,7 @@ class BlockPage extends StatefulWidget {
 
   @override
   BlockPageState createState() {
-    print("CreateState");
+//    print("CreateState");
     return new BlockPageState();
   }
 }
@@ -87,15 +88,14 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
 
 }
 
-class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这个tile
+class Blocks extends StatefulWidget {//输入一个JSON数据,自动展示这个tile
   Blocks(this.url, this.newsTitle, this.bgPic);
 
-  Blocks.withJson(Map jsonData){
+  Blocks.withJson(Key key,Map jsonData):super (key:key){
     url = jsonData["infoId__url"];
     newsTitle = jsonData["infoId__title"];
-    var picString = jsonData["infoId__imageURL"];
-//    print(picString == "nil");
-    bgPic = picString == "nil" ? null : picString ;
+    bgPic = jsonData["infoId__imageURL"];
+//    bgPic = picString == "nil" ? null : picString ;
     var tagName = jsonData["infoId__category"];
     tagsArray.add(tagName);
   }
@@ -106,45 +106,148 @@ class Blocks extends StatelessWidget {//输入一个JSON数据,自动展示这�
   List<String> tagsArray = [];
 
   @override
+  BlocksState createState(){
+//    print("CreateState");
+//    print(newsTitle);
+    return BlocksState(url,newsTitle,bgPic,tagsArray);
+  }
+
+//  @override
+//  Widget build(BuildContext context) {
+//    // TODO: implement build
+//    return new GestureDetector(
+//      child: Container(
+//        decoration: PicBoxDecoration(bgPic),
+//        child: Container(
+//          decoration: TextBoxDecoration(bgPic),
+//          child: new Container(
+//            child: Stack(
+//              children: <Widget>[
+//                Text(
+//                  newsTitle,
+//                  style: BlockTitleTextStyle,
+//                  overflow: TextOverflow.ellipsis,
+//                  maxLines: ConstantsForTile.textMaxLine,
+//                ),
+//                Positioned(
+//                  child: Row(
+//                    children: BlockKeyWords(tagsArray),
+//                  ),
+//                  bottom: 0.2,
+//                  right: 0.2,
+//                ),
+//              ],
+//            ),
+//            padding: EdgeInsets.all(10),
+//          ),
+//        ),
+//      ),
+//      onTap: (){
+//        Navigator.push(context,//进入下一个页面
+//        new MaterialPageRoute(builder: (context) {
+//          return new BlocksTapRoute(url);
+//        }));
+//      },
+//    );
+//  }
+}
+
+class BlocksState extends State<Blocks> {
+
+  BlocksState(this.url,this.newsTitle,this.bgPic,this.tagsArray);
+
+  var url;
+  var newsTitle;
+  var bgPic;
+  List<String> tagsArray = [];
+
+  @override
   Widget build(BuildContext context) {
+//    print("BlockStateBuilding");
     // TODO: implement build
+//    print(newsTitle);
     return new GestureDetector(
-      child: Container(
-        decoration: PicBoxDecoration(bgPic),
-        child: new Container(
-          decoration: TextBoxDecoration(bgPic),
-          child: new Container(
-            child: Stack(
-              children: <Widget>[
-                Text(
-                  newsTitle,
-                  style: BlockTitleTextStyle,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: ConstantsForTile.textMaxLine,
-                ),
-                Positioned(
-                  child: Row(
-                    children: BlockKeyWords(tagsArray),
-                  ),
-                  bottom: 0.2,
-                  right: 0.2,
-                ),
-              ],
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          BlocksBackgroundPic(bgPic),
+          bgPic == "nil"
+              ? TitleWithGlass(newsTitle)
+              : TitleWithoutGlass(newsTitle),
+          Positioned(
+            child: Row(
+              children: BlockKeyWords(tagsArray),
             ),
-            padding: EdgeInsets.all(10),
+            bottom: 10.0,
+            right: 10.0,
           ),
+        ],
+      ),
+    );
+  }
+
+}
+
+Widget BlocksBackgroundPic(url) {
+  if (url == "nil") {
+        //获取一些颜色
+    var color = model.getATileColor();
+    return new Container(
+      decoration: new BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BlockShadow],
+        color: color,
+      ),
+    );
+  } else {
+    return new Container(
+      decoration: new BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BlockShadow],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+//        child: Image.network(
+//          url,
+//          fit: BoxFit.cover,
+//        ),
+        child: FadeInImage.memoryNetwork(
+          placeholder: kTransparentImage,
+          image: url,
+          fit: BoxFit.cover,
         ),
       ),
-      onTap: (){
-        Navigator.push(context,//进入下一个页面
-        new MaterialPageRoute(builder: (context) {
-          return new BlocksTapRoute(url);
-        }));
-      },
     );
   }
 }
 
+Widget TitleWithGlass(newsTitle) {
+  return new Container(
+    child: Text(
+      newsTitle,
+      style: BlockTitleTextStyle,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 5,
+    ),
+    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+  );
+}
+
+Widget TitleWithoutGlass(newsTitle) {
+  return new Container(
+    child: Text(
+      newsTitle,
+      style: BlockTitleTextStyle,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 5,
+    ),
+    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: Color.fromRGBO(14, 14, 14, 0.3),
+    ),
+  );
+}
 
 List<Widget> BlockKeyWords (List<String> keywordArray){
   List<Widget> keyWordList = [];
@@ -167,39 +270,39 @@ List<Widget> BlockKeyWords (List<String> keywordArray){
   return keyWordList;
 }
 
-BoxDecoration PicBoxDecoration(bgPic){
-  if(bgPic == null){
-    //获取一些颜色
-    var color = model.getATileColor();
-    return new BoxDecoration(
-      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
-      boxShadow: [BlockShadow],
-      color: color, //if the pic is null use the colors
-    );
-  }
-  else{
-    return new BoxDecoration(
-      image: DecorationImage(
-        image: NetworkImage(bgPic), //it's an AssetImage from local,can changed with NetworkImage
-        fit: BoxFit.cover,
-      ),
-      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
-      boxShadow: [BlockShadow],
-    );
-  }
-}
-
-BoxDecoration TextBoxDecoration(bgPic){
-  if(bgPic == null){
-    return BoxDecoration(); // non pic without color
-  }
-  else{
-    return new BoxDecoration(
-      color: Color.fromRGBO(14, 14, 14, 0.3), //this is the color between the image and text
-      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
-    );
-  }
-}
+//BoxDecoration PicBoxDecoration(bgPic){
+//  if(bgPic == null){
+//    //获取一些颜色
+//    var color = model.getATileColor();
+//    return new BoxDecoration(
+//      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
+//      boxShadow: [BlockShadow],
+//      color: color, //if the pic is null use the colors
+//    );
+//  }
+//  else{
+//    return new BoxDecoration(
+//      image: DecorationImage(
+//        image: NetworkImage(bgPic),
+//        fit: BoxFit.cover,
+//      ),
+//      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
+//      boxShadow: [BlockShadow],
+//    );
+//  }
+//}
+//
+//BoxDecoration TextBoxDecoration(bgPic){
+//  if(bgPic == null){
+//    return BoxDecoration(); // non pic without color
+//  }
+//  else{
+//    return new BoxDecoration(
+//      color: Color.fromRGBO(14, 14, 14, 0.3), //this is the color between the image and text
+//      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
+//    );
+//  }
+//}
 
 List<StaggeredTile> _staggeredTitles = <StaggeredTile>[
   StaggeredTile.count(2, 1),

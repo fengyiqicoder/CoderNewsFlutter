@@ -46,13 +46,16 @@ class MainModel{
         var categoryName = currentCategoryArray[index];
         if (categoryName == tagName) {
           currentQueueHeadArray[index]++;
+//          print(currentQueueHeadArray);
           break;
         }
       }
-//      print(tagArray is String);
-      var widget = Blocks.withJson(data);
+//      print(data);
+      var id = data["infoId"].toString();
+      var widget = Blocks.withJson(Key(id),data);
       result.add(widget);
     }
+
     //更新
     return result;
   }

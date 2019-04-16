@@ -10,17 +10,13 @@ const BlockTitleTextStyle = TextStyle(
   color: Colors.white,
 ); // TextStyle
 
-const BlockShadow = BoxShadow(
-    color:Colors.black38,
-    offset: Offset(2.0,2.0),
-    blurRadius: 4.0
-);
+const BlockShadow =
+    BoxShadow(color: Colors.black38, offset: Offset(2.0, 2.0), blurRadius: 4.0);
 
 //数据控制
 var model = MainModel();
 
 class BlockPage extends StatefulWidget {
-
   const BlockPage({Key key});
 
   @override
@@ -30,9 +26,11 @@ class BlockPage extends StatefulWidget {
   }
 }
 
-class BlockPageState extends State<BlockPage> {//从Model获取数据进行展示
-  List<StaggeredTile> currentTile = [] ;
-  List<Widget> currentWidgets = [] ;
+class BlockPageState extends State<BlockPage> {
+  //从Model获取数据进行展示
+  List<StaggeredTile> currentTile = [];
+
+  List<Blocks> currentWidgets = [];
 
   @override
   void initState() {
@@ -42,24 +40,25 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
     getDatasForView();
   }
 
-
   @override
   Widget build(BuildContext context) {
     print("Building Page");
-    if (currentTile == []){
-      return Scaffold();//return emtry views
+    if (currentTile == []) {
+      return Scaffold(); //return emtry views
     }
     return new Scaffold(
       body: new StaggeredGridView.count(
-        crossAxisCount: 2,
-        staggeredTiles: currentTile, //the style of the blocks
-        children: currentWidgets, // the information of the blocks
-        controller: ScrollController(initialScrollOffset: 0.0,keepScrollOffset: false),
-        scrollDirection: Axis.vertical,
-        mainAxisSpacing: ConstantsForTile.axiaGap,
-        crossAxisSpacing: ConstantsForTile.axiaGap,
-        padding: EdgeInsets.symmetric(vertical: 30,horizontal: 8)
-      ),
+          crossAxisCount: 2,
+          staggeredTiles: currentTile,
+          //the style of the blocks
+          children: currentWidgets,
+          // the information of the blocks
+          controller: ScrollController(
+              initialScrollOffset: 0.0, keepScrollOffset: false),
+          scrollDirection: Axis.vertical,
+          mainAxisSpacing: ConstantsForTile.axiaGap,
+          crossAxisSpacing: ConstantsForTile.axiaGap,
+          padding: EdgeInsets.symmetric(vertical: 30, horizontal: 8)),
       floatingActionButton: FloatingActionButton(
         onPressed: onTapFloatButton,
         child: Icon(Icons.refresh),
@@ -68,8 +67,11 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
     );
   }
 
-  void onTapFloatButton () {
+  void onTapFloatButton() {
     //在这里获取数据
+    currentWidgets.forEach((view){
+      view.controller.reverse();
+    });
     print("tappingButton");
     getDatasForView();
   }
@@ -77,27 +79,27 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
   void getDatasForView() async {
     var tileList = model.getATileList();
     var widgetList = model.getWidgets(tileList);
-    currentWidgets = await widgetList;//更新数据
+    currentWidgets = await widgetList; //更新数据
     currentTile = tileList;
     print("DataLanding");
-    this.setState((){
+    this.setState(() {
       //刷新页面
       print("updateViews");
     });
   }
-
 }
 
-class Blocks extends StatefulWidget {//输入一个JSON数据,自动展示这个tile
-  Blocks(this.url, this.newsTitle, this.bgPic);
-
-  Blocks.withJson(Key key,Map jsonData,int textMaxLine):super (key:key){
+class Blocks extends StatefulWidget {
+  //输入一个JSON数据,自动展示这个tile
+  //Build方法
+  Blocks.withJson(Key key, Map jsonData, int textMaxLine,Color color) : super(key: key) {
     url = jsonData["infoId__url"];
     newsTitle = jsonData["infoId__title"];
     bgPic = jsonData["infoId__imageURL"];
     var tagName = jsonData["infoId__category"];
     tagsArray.add(tagName);
     this.textMaxLine = textMaxLine;
+    this.color = color;
   }
 
   var url;
@@ -105,56 +107,99 @@ class Blocks extends StatefulWidget {//输入一个JSON数据,自动展示这个
   var bgPic;
   var textMaxLine;
   List<String> tagsArray = [];
+  //静态方法找到State
+//  static BlocksState of(BuildContext context) => context.ancestorStateOfType(const TypeMatcher<BlocksState>());
 
+  var context;
+  var color;
+  //创建state
+  AnimationController controller;
   @override
-  BlocksState createState(){
+  BlocksState createState() {
 //    print("CreateState");
-//    print(newsTitle);
-    return BlocksState(url,newsTitle,bgPic,tagsArray,textMaxLine);
+    var newState = BlocksState(url, newsTitle, bgPic, tagsArray, textMaxLine,color);
+    controller = new AnimationController(
+        duration: const Duration(milliseconds: 550), vsync: newState);
+//    print("CreateController");
+    newState.controller = controller;
+    this.context = newState.context;
+    return newState;
   }
 }
 
-class BlocksState extends State<Blocks> {
+class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
+  //Build方法
+  BlocksState(
+      this.url, this.newsTitle, this.bgPic, this.tagsArray, this.textMaxLine,this.color);
 
-  BlocksState(this.url,this.newsTitle,this.bgPic,this.tagsArray,this.textMaxLine);
-
+  //数据源
   var url;
   var newsTitle;
   var bgPic;
   var textMaxLine;
+  var color;
   List<String> tagsArray = [];
+
+  //Animation
+  Animation<double> animation;
+  AnimationController controller;
+
+  //lifeCycle
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("inintState");
+    animation = new Tween(begin: 0.2, end: 1.0).animate(controller)
+      ..addListener(() {
+        setState(() {});
+      });
+    animation = CurvedAnimation(parent: animation, curve: Curves.easeInOutCirc);
+    //启动动画(正向执行)
+    controller.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
 //    print("BlockStateBuilding");
     // TODO: implement build
 //    print(newsTitle);
-    return new GestureDetector(
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          BlocksBackgroundPic(bgPic),
-          bgPic == "nil"
-              ? TitleWithGlass(newsTitle,textMaxLine)
-              : TitleWithoutGlass(newsTitle,textMaxLine),
-          Positioned(
-            child: Row(
-              children: BlockKeyWords(tagsArray),
-            ),
-            bottom: 10.0,
-            right: 10.0,
+    return Opacity(
+        opacity: animation.value,
+        child: GestureDetector(
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              BlocksBackgroundPic(bgPic,color),
+              bgPic == "nil"
+                  ? TitleWithGlass(newsTitle, textMaxLine)
+                  : TitleWithoutGlass(newsTitle, textMaxLine),
+              Positioned(
+                child: Row(
+                  children: BlockKeyWords(tagsArray),
+                ),
+                bottom: 10.0,
+                right: 10.0,
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
+  }
 }
 
-Widget BlocksBackgroundPic(url) {
+Widget BlocksBackgroundPic(url,color) {
   if (url == "nil") {
-        //获取一些颜色
-    var color = model.getATileColor();
+    //获取一些颜色
+//    var color = Colors.pink;
     return new Container(
       decoration: new BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -184,7 +229,8 @@ Widget BlocksBackgroundPic(url) {
   }
 }
 
-Widget TitleWithGlass(newsTitle,maxLine) {//这个方法和下一个方法合成一个 等待重构
+Widget TitleWithGlass(newsTitle, maxLine) {
+  //这个方法和下一个方法合成一个 等待重构
   return new Container(
     child: Text(
       newsTitle,
@@ -196,7 +242,7 @@ Widget TitleWithGlass(newsTitle,maxLine) {//这个方法和下一个方法合成
   );
 }
 
-Widget TitleWithoutGlass(newsTitle,maxLine) {
+Widget TitleWithoutGlass(newsTitle, maxLine) {
   return new Container(
     child: Text(
       newsTitle,
@@ -212,19 +258,20 @@ Widget TitleWithoutGlass(newsTitle,maxLine) {
   );
 }
 
-List<Widget> BlockKeyWords (List<String> keywordArray){
+List<Widget> BlockKeyWords(List<String> keywordArray) {
   List<Widget> keyWordList = [];
-  for (var tagName in keywordArray){
+  for (var tagName in keywordArray) {
     var widget = Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(21),
         color: Color.fromRGBO(96, 98, 92, 0.6),
       ),
       height: 21,
-      child:Center(child: Text(tagName,
-          style: TextStyle(
-            color: Colors.white70,
-          )),
+      child: Center(
+        child: Text(tagName,
+            style: TextStyle(
+              color: Colors.white70,
+            )),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8),
     );
@@ -267,16 +314,16 @@ List<Widget> BlockKeyWords (List<String> keywordArray){
 //  }
 //}
 
-class BlocksTapRoute extends StatefulWidget{
+class BlocksTapRoute extends StatefulWidget {
   BlocksTapRoute(this.id);
 
   var id;
+
   @override
   State<StatefulWidget> createState() => new _BlocksTapRouteState(id);
-
 }
 
-class _BlocksTapRouteState extends State<BlocksTapRoute>{
+class _BlocksTapRouteState extends State<BlocksTapRoute> {
   _BlocksTapRouteState(this.id);
 
   var id;
@@ -290,5 +337,4 @@ class _BlocksTapRouteState extends State<BlocksTapRoute>{
       ),
     );
   }
-
 }

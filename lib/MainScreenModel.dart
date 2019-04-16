@@ -35,10 +35,10 @@ class MainModel{
     }
   }
   //获取Widgets
-  Future<List<Widget>> getWidgets(List tileList) async {
+  Future<List<Blocks>> getWidgets(List tileList) async {
     var rawJson = await getMainScreenDatas(currentCategoryArray, tileList.length, currentQueueHeadArray);
     List jsonArray = rawJson["data"];
-    List<Widget> result = [];
+    List<Blocks> result = [];
     jsonArray.asMap().forEach((indexForData,data){
       //队首进行更新 只能处理单个标签的情况
       var tagName = data["infoId__category"];
@@ -55,7 +55,8 @@ class MainModel{
       var height = tileList[indexForData].mainAxisCellCount;
       print(".mainAxisCellCount");
       print(height);
-      var widget = Blocks.withJson(Key(id),data,height*3);
+      var color = getATileColor();
+      Blocks widget = Blocks.withJson(Key(id),data,height*3,color);
       result.add(widget);
     });
 

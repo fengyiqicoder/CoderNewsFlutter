@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'dart:math';
+import 'dart:ui';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 const BlockTitleTextStyle = TextStyle(
   fontSize: 22,
   color: Colors.white,
+  shadows: [BlockShadow],
 ); // TextStyle
 
 const BlockShadow =
@@ -13,6 +15,9 @@ const BlockShadow =
 class DefaultTheme {
   static const buttomColor = Colors.pinkAccent;
 }
+
+var ScreenSize = window.physicalSize; //real px
+var Pixel = window.devicePixelRatio;
 
 //把之前的DecorationBox换成FadeInImage提示图片获取效果
 //方法:因为FadeInImage是Widget而不是decoration所以要用Stack布局
@@ -29,8 +34,10 @@ class BlockPage extends StatefulWidget {
 class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    print("BuildingState");
     // TODO: implement build
+    var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
+    var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight) / 2 / Pixel;
+
     return new Scaffold(
       body: new StaggeredGridView.count(
           crossAxisCount: 2,
@@ -40,7 +47,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
           // the information of the blocks
           mainAxisSpacing: 12.0,
           crossAxisSpacing: 12.0,
-          padding: EdgeInsets.symmetric(vertical: 78, horizontal: 8),
+          padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(

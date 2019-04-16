@@ -13,11 +13,12 @@ const BlockShadow =
     BoxShadow(color: Colors.black54, offset: Offset(4.0, 4.0), blurRadius: 8.0);
 
 class DefaultTheme {
-  static const buttomColor = Colors.pinkAccent;
+  static const buttomColor = Color.fromRGBO(252, 92, 137, 0.9);
 }
 
 var ScreenSize = window.physicalSize; //real px
 var Pixel = window.devicePixelRatio;
+var PaddingTopSize = window.padding.top;
 
 //把之前的DecorationBox换成FadeInImage提示图片获取效果
 //方法:因为FadeInImage是Widget而不是decoration所以要用Stack布局
@@ -36,32 +37,41 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     // TODO: implement build
     var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
-    var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight) / 2 / Pixel;
+    var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight + PaddingTopSize.toDouble()) / 2 / Pixel;
 
     return new Scaffold(
-      body: new StaggeredGridView.count(
-          crossAxisCount: 2,
-          staggeredTiles: counter ? _staggeredTitles : _staggeredTitles1,
-          //the style of the blocks
-          children: counter ? titles : changedTitles,
-          // the information of the blocks
-          mainAxisSpacing: 12.0,
-          crossAxisSpacing: 12.0,
-          padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: onTapFloatButton,
-        child: Icon(Icons.refresh),
-        backgroundColor: DefaultTheme.buttomColor,
+      body: Stack(
+        children: <Widget>[
+          new StaggeredGridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            staggeredTiles: counter ? _staggeredTitles : _staggeredTitles1,
+            //the style of the blocks
+            children: counter ? titles : changedTitles,
+            // the information of the blocks
+            mainAxisSpacing: 12.0,
+            crossAxisSpacing: 12.0,
+            padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
+          ),
+          new Positioned(
+            bottom: 13,
+            left: 3,
+            height: 60,
+            child: new RaisedButton(
+              shape: CircleBorder(),
+              child: Icon(Icons.list,size: 33,),
+              onPressed: onTapFloatButton,
+              color: DefaultTheme.buttomColor,
+              textColor: Colors.white70,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   void onTapFloatButton() {
-    setState(() {
-      counter = !counter;
-    });
+    print("onTapFloatButton");
   }
 }
 

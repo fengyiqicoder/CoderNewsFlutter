@@ -174,9 +174,9 @@ Widget BlocksBackgroundPic(url) {
 //          url,
 //          fit: BoxFit.cover,
 //        ),
-        child: FadeInImage.memoryNetwork(
-          placeholder: kTransparentImage,
-          image: url,
+        child: FadeInImage(
+          placeholder: AssetImage("images/Pulse.gif"),
+          image: NetworkImage(url),
           fit: BoxFit.cover,
         ),
       ),

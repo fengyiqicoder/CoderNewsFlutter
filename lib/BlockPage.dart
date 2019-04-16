@@ -76,7 +76,7 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
 
   void getDatasForView() async {
     var tileList = model.getATileList();
-    var widgetList = model.getWidgets(tileList.length);
+    var widgetList = model.getWidgets(tileList);
     currentWidgets = await widgetList;//更新数据
     currentTile = tileList;
     print("DataLanding");
@@ -91,74 +91,37 @@ class BlockPageState extends State<BlockPage> {//从Model获取数据进行展�
 class Blocks extends StatefulWidget {//输入一个JSON数据,自动展示这个tile
   Blocks(this.url, this.newsTitle, this.bgPic);
 
-  Blocks.withJson(Key key,Map jsonData):super (key:key){
+  Blocks.withJson(Key key,Map jsonData,int textMaxLine):super (key:key){
     url = jsonData["infoId__url"];
     newsTitle = jsonData["infoId__title"];
     bgPic = jsonData["infoId__imageURL"];
-//    bgPic = picString == "nil" ? null : picString ;
     var tagName = jsonData["infoId__category"];
     tagsArray.add(tagName);
+    this.textMaxLine = textMaxLine;
   }
 
   var url;
   var newsTitle;
   var bgPic;
+  var textMaxLine;
   List<String> tagsArray = [];
 
   @override
   BlocksState createState(){
 //    print("CreateState");
 //    print(newsTitle);
-    return BlocksState(url,newsTitle,bgPic,tagsArray);
+    return BlocksState(url,newsTitle,bgPic,tagsArray,textMaxLine);
   }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    // TODO: implement build
-//    return new GestureDetector(
-//      child: Container(
-//        decoration: PicBoxDecoration(bgPic),
-//        child: Container(
-//          decoration: TextBoxDecoration(bgPic),
-//          child: new Container(
-//            child: Stack(
-//              children: <Widget>[
-//                Text(
-//                  newsTitle,
-//                  style: BlockTitleTextStyle,
-//                  overflow: TextOverflow.ellipsis,
-//                  maxLines: ConstantsForTile.textMaxLine,
-//                ),
-//                Positioned(
-//                  child: Row(
-//                    children: BlockKeyWords(tagsArray),
-//                  ),
-//                  bottom: 0.2,
-//                  right: 0.2,
-//                ),
-//              ],
-//            ),
-//            padding: EdgeInsets.all(10),
-//          ),
-//        ),
-//      ),
-//      onTap: (){
-//        Navigator.push(context,//进入下一个页面
-//        new MaterialPageRoute(builder: (context) {
-//          return new BlocksTapRoute(url);
-//        }));
-//      },
-//    );
-//  }
 }
 
 class BlocksState extends State<Blocks> {
 
-  BlocksState(this.url,this.newsTitle,this.bgPic,this.tagsArray);
+  BlocksState(this.url,this.newsTitle,this.bgPic,this.tagsArray,this.textMaxLine);
 
   var url;
   var newsTitle;
   var bgPic;
+  var textMaxLine;
   List<String> tagsArray = [];
 
   @override
@@ -172,8 +135,8 @@ class BlocksState extends State<Blocks> {
         children: <Widget>[
           BlocksBackgroundPic(bgPic),
           bgPic == "nil"
-              ? TitleWithGlass(newsTitle)
-              : TitleWithoutGlass(newsTitle),
+              ? TitleWithGlass(newsTitle,textMaxLine)
+              : TitleWithoutGlass(newsTitle,textMaxLine),
           Positioned(
             child: Row(
               children: BlockKeyWords(tagsArray),
@@ -221,25 +184,25 @@ Widget BlocksBackgroundPic(url) {
   }
 }
 
-Widget TitleWithGlass(newsTitle) {
+Widget TitleWithGlass(newsTitle,maxLine) {//这个方法和下一个方法合成一个 等待重构
   return new Container(
     child: Text(
       newsTitle,
       style: BlockTitleTextStyle,
       overflow: TextOverflow.ellipsis,
-      maxLines: 5,
+      maxLines: maxLine,
     ),
     padding: EdgeInsets.only(top: 10, left: 10, right: 10),
   );
 }
 
-Widget TitleWithoutGlass(newsTitle) {
+Widget TitleWithoutGlass(newsTitle,maxLine) {
   return new Container(
     child: Text(
       newsTitle,
       style: BlockTitleTextStyle,
       overflow: TextOverflow.ellipsis,
-      maxLines: 5,
+      maxLines: maxLine,
     ),
     padding: EdgeInsets.only(top: 10, left: 10, right: 10),
     decoration: BoxDecoration(
@@ -303,43 +266,6 @@ List<Widget> BlockKeyWords (List<String> keywordArray){
 //    );
 //  }
 //}
-
-List<StaggeredTile> _staggeredTitles = <StaggeredTile>[
-  StaggeredTile.count(2, 1),
-  StaggeredTile.count(1, 2),
-  StaggeredTile.count(1, 1),
-  StaggeredTile.count(1, 1),
-];
-
-List<StaggeredTile> _staggeredTitles1 = <StaggeredTile>[
-  StaggeredTile.count(1, 1),
-  StaggeredTile.count(1, 2),
-  StaggeredTile.count(1, 2),
-  StaggeredTile.count(1, 1),
-];
-
-
-
-List<Widget> titles = <Widget>[
-  Blocks(0,titlestext[3],null),
-  Blocks(1,titlestext[0],null),
-  Blocks(2,titlestext[1],null),
-  Blocks(3,titlestext[2],null),
-];
-
-List<Widget> changedtitles = <Widget>[
-  Blocks(0,titlestext[1],"images/bgpic0.jpg"),
-  Blocks(1,titlestext[2],"images/bgpic1.png"),
-  Blocks(2,titlestext[0],"images/bgpic2.jpg"),
-  Blocks(3,titlestext[3],"images/bgpic3.jpeg"),
-];
-
-List<String> titlestext = <String>[
-  "this is the fucking title",
-  "lover~ fucker~",
-  "do you fell cold and lost in desperation?",
-  "you build up hope and failures all you know,remember all the sadness and frustration,and let it go,let it go"
-];
 
 class BlocksTapRoute extends StatefulWidget{
   BlocksTapRoute(this.id);

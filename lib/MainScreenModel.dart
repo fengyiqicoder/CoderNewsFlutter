@@ -35,11 +35,11 @@ class MainModel{
     }
   }
   //获取Widgets
-  Future<List<Widget>> getWidgets(amount) async {
-    var rawJson = await getMainScreenDatas(currentCategoryArray, amount, currentQueueHeadArray);
-    var jsonArray = rawJson["data"];
+  Future<List<Widget>> getWidgets(List tileList) async {
+    var rawJson = await getMainScreenDatas(currentCategoryArray, tileList.length, currentQueueHeadArray);
+    List jsonArray = rawJson["data"];
     List<Widget> result = [];
-    for (var data in jsonArray){
+    jsonArray.asMap().forEach((indexForData,data){
       //队首进行更新 只能处理单个标签的情况
       var tagName = data["infoId__category"];
       for (var index = 0;index < currentCategoryArray.length;index++){
@@ -52,9 +52,12 @@ class MainModel{
       }
 //      print(data);
       var id = data["infoId"].toString();
-      var widget = Blocks.withJson(Key(id),data);
+      var height = tileList[indexForData].mainAxisCellCount;
+      print(".mainAxisCellCount");
+      print(height);
+      var widget = Blocks.withJson(Key(id),data,height*3);
       result.add(widget);
-    }
+    });
 
     //更新
     return result;

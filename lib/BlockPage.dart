@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'Network.dart';
 import 'MainScreenModel.dart';
 import 'Constants.dart';
-import 'package:transparent_image/transparent_image.dart';
+import 'dart:ui';
 
-const BlockTitleTextStyle = TextStyle(
-  fontSize: 22,
-  color: Colors.white,
-); // TextStyle
-
-const BlockShadow =
-    BoxShadow(color: Colors.black38, offset: Offset(2.0, 2.0), blurRadius: 4.0);
 
 //数据控制
 var model = MainModel();
+//屏幕具中
+var ScreenSize = window.physicalSize; //real px
+var Pixel = window.devicePixelRatio;
+var PaddingTopSize = window.padding.top;
 
 class BlockPage extends StatefulWidget {
   const BlockPage({Key key});
@@ -42,6 +38,8 @@ class BlockPageState extends State<BlockPage> {
 
   @override
   Widget build(BuildContext context) {
+    var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
+    var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight + PaddingTopSize.toDouble()) / 2 / Pixel;
     print("Building Page");
     if (currentTile == []) {
       return Scaffold(); //return emtry views
@@ -58,7 +56,7 @@ class BlockPageState extends State<BlockPage> {
           scrollDirection: Axis.vertical,
           mainAxisSpacing: ConstantsForTile.axiaGap,
           crossAxisSpacing: ConstantsForTile.axiaGap,
-          padding: EdgeInsets.symmetric(vertical: 30, horizontal: 8)),
+          padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8)),
       floatingActionButton: FloatingActionButton(
         onPressed: onTapFloatButton,
         child: Icon(Icons.refresh),
@@ -203,7 +201,7 @@ Widget BlocksBackgroundPic(url,color) {
     return new Container(
       decoration: new BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BlockShadow],
+        boxShadow: [ConstantsForTile.BlockShadow],
         color: color,
       ),
     );
@@ -211,7 +209,7 @@ Widget BlocksBackgroundPic(url,color) {
     return new Container(
       decoration: new BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BlockShadow],
+        boxShadow: [ConstantsForTile.BlockShadow],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
@@ -234,7 +232,7 @@ Widget TitleWithGlass(newsTitle, maxLine) {
   return new Container(
     child: Text(
       newsTitle,
-      style: BlockTitleTextStyle,
+      style: ConstantsForTile.BlockTitleTextStyle,
       overflow: TextOverflow.ellipsis,
       maxLines: maxLine,
     ),
@@ -246,7 +244,7 @@ Widget TitleWithoutGlass(newsTitle, maxLine) {
   return new Container(
     child: Text(
       newsTitle,
-      style: BlockTitleTextStyle,
+      style: ConstantsForTile.BlockTitleTextStyle,
       overflow: TextOverflow.ellipsis,
       maxLines: maxLine,
     ),

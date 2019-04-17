@@ -55,13 +55,12 @@ class BlockPageState extends State<BlockPage> {
     return new Scaffold(
       body: DecoratedBox(
         child: StaggeredGridView.count(
+            physics: NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
             staggeredTiles: currentTile,
             //the style of the blocks
             children: currentWidgets,
             // the information of the blocks
-            controller: ScrollController(
-                initialScrollOffset: 0.0, keepScrollOffset: false),
             scrollDirection: Axis.vertical,
             mainAxisSpacing: ConstantsForTile.axiaGap,
             crossAxisSpacing: ConstantsForTile.axiaGap,

@@ -104,9 +104,10 @@ class ConstantsForTile {
     [
       StaggeredTile.count(1, 1),
       StaggeredTile.count(1, 1),
+      StaggeredTile.count(2, 1),
       StaggeredTile.count(1, 1),
       StaggeredTile.count(1, 1),
-      StaggeredTile.count(2, 2),
+      StaggeredTile.count(2, 1),
     ],
   ];
 

@@ -1,6 +1,12 @@
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter/material.dart';
 
+class Constants{
+  static const mainScreenBackgroundColor = Color(0xFFF5F5F5);
+  static const changeGridTo4x2Radio = 2;
+  static const gridViewHorizontalGapToScreen = 12.0;
+}
+
 class ConstantsForTile {
 
   static const BlockTitleTextStyle = TextStyle(
@@ -11,8 +17,7 @@ class ConstantsForTile {
 
   static const BlockShadow = BoxShadow(color: Colors.black38, offset: Offset(2.0, 2.0), blurRadius: 4.0);
 
-  static const textMaxLine = 4;
-  static const tileRadio = 8.0;
+  static const tileRadio = 12.0;
   static const axiaGap = 8.0;
   static const colorsList = [
     Color(0xFF556FB5),
@@ -22,7 +27,7 @@ class ConstantsForTile {
     Color(0xFF4A90E2),
     Color(0xFFDD6B4D),
   ];
-  static const staggeredTiles6by2 = [
+  static const staggeredTiles3by2 = [
     [
       StaggeredTile.count(2, 1),
       StaggeredTile.count(1, 2),
@@ -73,4 +78,36 @@ class ConstantsForTile {
       StaggeredTile.count(2, 1),
     ],
   ];
+
+  static const staggeredTiles4by2 = [
+    [
+      StaggeredTile.count(2, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(2, 1),
+    ],
+    [
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(2, 1),
+    ],
+    [
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+    ],
+    [
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(2, 2),
+    ],
+  ];
+
 }

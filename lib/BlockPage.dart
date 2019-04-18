@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'MainScreenModel.dart';
 import 'Constants.dart';
 import 'dart:ui';
+import 'package:webview_flutter/webview_flutter.dart';
 
 //数据控制
 var model = MainModel();
@@ -83,7 +84,9 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                   crossAxisSpacing: ConstantsForTile.axiaGap,
                   padding: EdgeInsets.symmetric(
                       vertical: PaddingSize,
-                      horizontal: Constants.gridViewHorizontalGapToScreen))),
+                      horizontal: Constants.gridViewHorizontalGapToScreen)
+              )
+          ),
           decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
         ),
       ),
@@ -93,7 +96,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
         _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
         setState(() {
-          if (isGettingNewData) {return;};
+          if (isGettingNewData) {return;}
           //更新状态
           if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
             var newOpacity = 1 + _deltas / widthToUpdate;
@@ -124,6 +127,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         _deltas = 0;
         //没有达到长度才会调用这个方法
       },
+
     );
   }
 
@@ -249,8 +253,28 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
-        ));
+          onTap: (){
+            Navigator.push(
+                context,
+                new MaterialPageRoute(builder: (context) {
+                  return new Scaffold(
+                    appBar: AppBar(
+                      title: Text(newsTitle),
+                      backgroundColor: bgPic=="" ? color:Color(0xFF4A90E2),
+                    ),
+                    body: new WebView(
+                      initialUrl: url,
+                    ),
+
+                  );
+                })
+            );
+          },
+        )
+    );
   }
+
+
 
   @override
   void dispose() {

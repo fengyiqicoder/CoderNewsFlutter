@@ -10,7 +10,7 @@ var model = MainModel();
 var ScreenSize = window.physicalSize; //real px
 var Pixel = window.devicePixelRatio;
 var PaddingTopSize = window.padding.top;
-var screenRatio = ScreenSize.height/ScreenSize.width;
+var screenRatio = ScreenSize.height / ScreenSize.width;
 var gridHeightIs4 = screenRatio > Constants.changeGridTo4x2Radio;
 
 class BlockPage extends StatefulWidget {
@@ -23,11 +23,17 @@ class BlockPage extends StatefulWidget {
   }
 }
 
-class BlockPageState extends State<BlockPage> {
+class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   //从Model获取数据进行展示
   List<StaggeredTile> currentTile = [];
-
   List<Blocks> currentWidgets = [];
+  //Animations
+  AnimationController _controller;
+  Animation<double> _animation;
+  double _deltas;
+  double widthToUpdate;
+  double opacity = 1.0;
+  bool isGettingNewData = false;
 
   @override
   void initState() {
@@ -35,12 +41,20 @@ class BlockPageState extends State<BlockPage> {
     super.initState();
     //在这里获取网络数据
     getDatasForView();
+    //animations
+    _controller = AnimationController(
+      duration: Duration(milliseconds: Constants.animationTimeForSwipeGesture),
+      vsync: this,
+    );
+
+    widthToUpdate = (ScreenSize.width.toDouble() / Pixel) * Constants.widthToUpdateRadioToScreen; //位移给定的范围
+    _deltas = 0; //手势的位移
   }
 
   @override
   Widget build(BuildContext context) {
-    print("屏幕信息");
-    print(screenRatio < Constants.changeGridTo4x2Radio);
+//    print("屏幕信息");
+//    print(screenRatio < Constants.changeGridTo4x2Radio);
     var gridHeight = gridHeightIs4 ? 4 : 3;
     var WidgetHeight = (ScreenSize.width.toDouble() / 2) * gridHeight;
     var PaddingSize = (ScreenSize.height.toDouble() -
@@ -48,39 +62,79 @@ class BlockPageState extends State<BlockPage> {
             PaddingTopSize.toDouble()) /
         2 /
         Pixel;
-    print("Building Page");
+//    print("Building Page");
     if (currentTile == []) {
       return Scaffold(); //return emtry views
     }
-    return new Scaffold(
-      body: DecoratedBox(
-        child: StaggeredGridView.count(
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            staggeredTiles: currentTile,
-            //the style of the blocks
-            children: currentWidgets,
-            // the information of the blocks
-            scrollDirection: Axis.vertical,
-            mainAxisSpacing: ConstantsForTile.axiaGap,
-            crossAxisSpacing: ConstantsForTile.axiaGap,
-            padding:
-                EdgeInsets.symmetric(vertical: PaddingSize, horizontal: Constants.gridViewHorizontalGapToScreen)),
-        decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
+    return GestureDetector(
+      child: Scaffold(
+        body: DecoratedBox(
+          child: Opacity(
+              opacity: opacity,
+              child: StaggeredGridView.count(
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  staggeredTiles: currentTile,
+                  //the style of the blocks
+                  children: currentWidgets,
+                  // the information of the blocks
+                  scrollDirection: Axis.vertical,
+                  mainAxisSpacing: ConstantsForTile.axiaGap,
+                  crossAxisSpacing: ConstantsForTile.axiaGap,
+                  padding: EdgeInsets.symmetric(
+                      vertical: PaddingSize,
+                      horizontal: Constants.gridViewHorizontalGapToScreen))),
+          decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
+        ),
+        floatingActionButton: Icon(Icons.refresh),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: onTapFloatButton,
-        child: Icon(Icons.refresh),
-        backgroundColor: Colors.pink,
-      ),
+      onHorizontalDragStart: (DragStartDetails startDetails) {
+        print(startDetails.toString());
+      },
+      onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
+        _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
+        setState(() {
+          if (isGettingNewData) {return;};
+          //更新状态
+          if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
+            var newOpacity = 1 + _deltas / widthToUpdate;
+            opacity = newOpacity;
+          } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
+            //刷新页面
+            print("更新数据页面");
+            _deltas = 0;
+            opacity = 1.0;
+            onTapFloatButton();
+
+          }
+        });
+      },
+      onHorizontalDragEnd: (DragEndDetails endDetails) {
+        print("手势结束");
+        print(opacity);
+        _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
+          ..addListener(() {
+            setState(() {
+              //执行动画
+              opacity = _animation.value;
+            });
+          }); //定义动画
+        _animation = CurvedAnimation(parent: _animation, curve: Curves.easeInOut);
+        _controller.value = opacity;
+        _controller.forward(); //?直接重新build
+        _deltas = 0;
+        //没有达到长度才会调用这个方法
+      },
     );
   }
 
   void onTapFloatButton() {
+
     //在这里获取数据
-    currentWidgets.forEach((view) {
-      view.controller.reverse();
-    });
+//    currentWidgets.forEach((view) {
+//      view.controller.reverse();
+//    });
+    isGettingNewData = true;
     print("tappingButton");
     getDatasForView();
   }
@@ -90,10 +144,12 @@ class BlockPageState extends State<BlockPage> {
     var widgetList = model.getWidgets(tileList);
     currentWidgets = await widgetList; //更新数据
     currentTile = tileList;
+
     print("DataLanding");
     this.setState(() {
       //刷新页面
       print("updateViews");
+      isGettingNewData = false;
     });
   }
 }
@@ -130,7 +186,7 @@ class Blocks extends StatefulWidget {
     var newState =
         BlocksState(url, newsTitle, bgPic, tagsArray, textMaxLine, color);
     controller = new AnimationController(
-        duration: const Duration(milliseconds: 550), vsync: newState);
+        duration: const Duration(milliseconds: Constants.animationTimeForViewToShowUp), vsync: newState);
 //    print("CreateController");
     newState.controller = controller;
     this.context = newState.context;
@@ -205,7 +261,7 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
 }
 
 Widget BlocksBackgroundPic(url, color) {
-  if (url == "nil") {
+  if (url == "nil" || url == "" || url == null) {
     //获取一些颜色
 //    var color = Colors.pink;
     return new Container(

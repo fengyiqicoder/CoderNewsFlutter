@@ -5,6 +5,9 @@ class Constants{
   static const mainScreenBackgroundColor = Color(0xFFF5F5F5);
   static const changeGridTo4x2Radio = 2;
   static const gridViewHorizontalGapToScreen = 12.0;
+  static const animationTimeForSwipeGesture = 270;
+  static const widthToUpdateRadioToScreen = 0.6;
+  static const animationTimeForViewToShowUp =  550;
 }
 
 class ConstantsForTile {

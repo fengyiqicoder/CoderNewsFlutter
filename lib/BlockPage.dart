@@ -63,7 +63,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             PaddingTopSize.toDouble()) /
         2 /
         Pixel;
-//    print("Building Page");
+    print("Building Page 透明度 $opacity" );
     if (currentTile == []) {
       return Scaffold(); //return emtry views
     }
@@ -95,8 +95,8 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       },
       onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
         _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
+        if (isGettingNewData) {return;}
         setState(() {
-          if (isGettingNewData) {return;}
           //更新状态
           if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
             var newOpacity = 1 + _deltas / widthToUpdate;
@@ -112,6 +112,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         });
       },
       onHorizontalDragEnd: (DragEndDetails endDetails) {
+        if (isGettingNewData) {return;};//判断是否正在获取数据
         print("手势结束");
         print(opacity);
         _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
@@ -129,6 +130,27 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       },
 
     );
+  }
+
+  @override
+  void didUpdateWidget(BlockPage oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
+    print("didUpdateWidget");
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print("changeDependencies");
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
   }
 
   void onTapFloatButton() {
@@ -150,10 +172,11 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 
     print("DataLanding");
     this.setState(() {
-      opacity = 1.0;
       //刷新页面
       print("updateViews");
       isGettingNewData = false;
+      print("changeToOpactiy");
+      opacity = 1.0;
     });
   }
 }
@@ -254,18 +277,18 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
             ],
           ),
           onTap: (){
+            print("url to show $url");
             Navigator.push(
                 context,
                 new MaterialPageRoute(builder: (context) {
                   return new Scaffold(
                     appBar: AppBar(
                       title: Text(newsTitle),
-                      backgroundColor: bgPic=="" ? color:Color(0xFF4A90E2),
+                      backgroundColor: bgPic=="" ? color:Constants.themeColor,
                     ),
                     body: new WebView(
                       initialUrl: url,
                     ),
-
                   );
                 })
             );

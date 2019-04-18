@@ -2,6 +2,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class Constants{
+  static const themeColor = Color(0xFF3C4F65);
   static const mainScreenBackgroundColor = Colors.black12;
   static const changeGridTo4x2Radio = 2;
   static const gridViewHorizontalGapToScreen = 12.0;

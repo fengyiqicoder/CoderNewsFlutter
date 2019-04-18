@@ -37,9 +37,8 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   Animation<double> _animation;
 
   double _deltas;
-  double _begin;
-  double _end;
-  double _maxWidth;
+  double widthToUpdate;
+  double opacity = 1.0;
 
   @override
   void initState() {
@@ -47,32 +46,30 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(microseconds: 1),
+      duration: Duration(milliseconds:300),
       vsync: this,
     );
 
-    _maxWidth = ScreenSize.width.toDouble() / Pixel - 80; //位移给定的范围
-    _begin = 1; //动画的开始
-    _end = 1; //动画的技术
+    widthToUpdate = (ScreenSize.width.toDouble() / Pixel) * 0.6; //位移给定的范围
     _deltas = 0; //手势的位移
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-
+    print("building Page");
     // fit screen datas
     var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
-    var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight + PaddingTopSize.toDouble()) / 2 / Pixel;
-
-    // animation datas
-    _animation = Tween(begin: _begin,end: _end).animate(_controller); //定义动画
-    _controller.forward();
+    var PaddingSize = (ScreenSize.height.toDouble() -
+            WidgetHeight +
+            PaddingTopSize.toDouble()) /
+        2 /
+        Pixel;
 
     return new Scaffold(
       body: GestureDetector(
         child: Opacity(
-          opacity: _animation.value,
+          opacity: opacity,
           child: Stack(
             children: <Widget>[
               new StaggeredGridView.count(
@@ -84,7 +81,8 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                 // the information of the blocks
                 mainAxisSpacing: 12.0,
                 crossAxisSpacing: 12.0,
-                padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
+                padding:
+                    EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
               ),
               new Positioned(
                 bottom: 13,
@@ -92,7 +90,10 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                 height: 60,
                 child: new RaisedButton(
                   shape: CircleBorder(),
-                  child: Icon(Icons.list,size: 33,),
+                  child: Icon(
+                    Icons.list,
+                    size: 33,
+                  ),
                   onPressed: onTapFloatButton,
                   color: DefaultTheme.buttomColor,
                   textColor: Colors.white70,
@@ -107,21 +108,33 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
           _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
           setState(() {
-            if(_deltas < 0 && _deltas.abs() < _maxWidth){ //判断位移的方向并确定滑动距离没有超过给定的范围
-                                                          //需要增加判断条件，判断是否超出给定范围，如果超过给定范围需要调用刷新
-              _begin = _end;
-              _end = 1 - _deltas.abs() / _maxWidth; //对动画的起止位置进行赋值
-              print("begin: $_begin");
-              print("end: $_end");
+            //更新状态
+            print("delta $widthToUpdate  $_deltas");
+            if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
+              //判断位移的方向并确定滑动距离没有超过给定的范围
+              //需要增加判断条件，判断是否超出给定范围，如果超过给定范围需要调用刷新
+              var newOpacity = 1 + _deltas / widthToUpdate;
+              opacity = newOpacity;
+            } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
+              //刷新页面
+              print("更新数据页面");
             }
           });
         },
         onHorizontalDragEnd: (DragEndDetails endDetails) {
-          _begin = 1;
-          _end = 1;
-          _deltas = 0; //手势监听结束对动画的值初始化 此处需要加入监听条件，如果滑动速度超过给定值需要调用刷新
-                       //实现方法：判断endDetails.velocity是否大于给定值
-          setState(() {});
+          print("手势结束");
+          print(opacity);
+          _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
+            ..addListener(() {
+            setState(() {//执行动画
+              opacity = _animation.value;
+            });
+          }); //定义动画
+          _animation = CurvedAnimation(parent: _animation, curve: Curves.easeIn);
+          _controller.value = opacity;
+          _controller.forward(); //?直接重新build
+          _deltas = 0;
+          //没有达到长度才会调用这个方法
         },
       ),
     );
@@ -174,7 +187,7 @@ class BlocksState extends State<Blocks> {
     );
   }
 
-  void onBlocksTap(){
+  void onBlocksTap() {
     print(url);
   }
 }
@@ -273,8 +286,6 @@ List<Widget> BlocksKeyWords(keyWords) {
     )
   ];
 }
-
-
 
 // static fake datas
 List<StaggeredTile> _staggeredTitles = <StaggeredTile>[

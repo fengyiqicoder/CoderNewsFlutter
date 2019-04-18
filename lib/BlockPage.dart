@@ -4,13 +4,14 @@ import 'MainScreenModel.dart';
 import 'Constants.dart';
 import 'dart:ui';
 
-
 //数据控制
 var model = MainModel();
-//屏幕具中
+//屏幕具中和Grid平铺
 var ScreenSize = window.physicalSize; //real px
 var Pixel = window.devicePixelRatio;
 var PaddingTopSize = window.padding.top;
+var screenRatio = ScreenSize.height/ScreenSize.width;
+var gridHeightIs4 = screenRatio > Constants.changeGridTo4x2Radio;
 
 class BlockPage extends StatefulWidget {
   const BlockPage({Key key});
@@ -38,25 +39,35 @@ class BlockPageState extends State<BlockPage> {
 
   @override
   Widget build(BuildContext context) {
-    var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
-    var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight + PaddingTopSize.toDouble()) / 2 / Pixel;
+    print("屏幕信息");
+    print(screenRatio < Constants.changeGridTo4x2Radio);
+    var gridHeight = gridHeightIs4 ? 4 : 3;
+    var WidgetHeight = (ScreenSize.width.toDouble() / 2) * gridHeight;
+    var PaddingSize = (ScreenSize.height.toDouble() -
+            WidgetHeight +
+            PaddingTopSize.toDouble()) /
+        2 /
+        Pixel;
     print("Building Page");
     if (currentTile == []) {
       return Scaffold(); //return emtry views
     }
     return new Scaffold(
-      body: new StaggeredGridView.count(
-          crossAxisCount: 2,
-          staggeredTiles: currentTile,
-          //the style of the blocks
-          children: currentWidgets,
-          // the information of the blocks
-          controller: ScrollController(
-              initialScrollOffset: 0.0, keepScrollOffset: false),
-          scrollDirection: Axis.vertical,
-          mainAxisSpacing: ConstantsForTile.axiaGap,
-          crossAxisSpacing: ConstantsForTile.axiaGap,
-          padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8)),
+      body: DecoratedBox(
+        child: StaggeredGridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            staggeredTiles: currentTile,
+            //the style of the blocks
+            children: currentWidgets,
+            // the information of the blocks
+            scrollDirection: Axis.vertical,
+            mainAxisSpacing: ConstantsForTile.axiaGap,
+            crossAxisSpacing: ConstantsForTile.axiaGap,
+            padding:
+                EdgeInsets.symmetric(vertical: PaddingSize, horizontal: Constants.gridViewHorizontalGapToScreen)),
+        decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: onTapFloatButton,
         child: Icon(Icons.refresh),
@@ -67,7 +78,7 @@ class BlockPageState extends State<BlockPage> {
 
   void onTapFloatButton() {
     //在这里获取数据
-    currentWidgets.forEach((view){
+    currentWidgets.forEach((view) {
       view.controller.reverse();
     });
     print("tappingButton");
@@ -75,7 +86,7 @@ class BlockPageState extends State<BlockPage> {
   }
 
   void getDatasForView() async {
-    var tileList = model.getATileList();
+    var tileList = model.getATileList(gridHeightIs4);
     var widgetList = model.getWidgets(tileList);
     currentWidgets = await widgetList; //更新数据
     currentTile = tileList;
@@ -90,7 +101,8 @@ class BlockPageState extends State<BlockPage> {
 class Blocks extends StatefulWidget {
   //输入一个JSON数据,自动展示这个tile
   //Build方法
-  Blocks.withJson(Key key, Map jsonData, int textMaxLine,Color color) : super(key: key) {
+  Blocks.withJson(Key key, Map jsonData, int textMaxLine, Color color)
+      : super(key: key) {
     url = jsonData["infoId__url"];
     newsTitle = jsonData["infoId__title"];
     bgPic = jsonData["infoId__imageURL"];
@@ -115,7 +127,8 @@ class Blocks extends StatefulWidget {
   @override
   BlocksState createState() {
 //    print("CreateState");
-    var newState = BlocksState(url, newsTitle, bgPic, tagsArray, textMaxLine,color);
+    var newState =
+        BlocksState(url, newsTitle, bgPic, tagsArray, textMaxLine, color);
     controller = new AnimationController(
         duration: const Duration(milliseconds: 550), vsync: newState);
 //    print("CreateController");
@@ -127,8 +140,8 @@ class Blocks extends StatefulWidget {
 
 class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   //Build方法
-  BlocksState(
-      this.url, this.newsTitle, this.bgPic, this.tagsArray, this.textMaxLine,this.color);
+  BlocksState(this.url, this.newsTitle, this.bgPic, this.tagsArray,
+      this.textMaxLine, this.color);
 
   //数据源
   var url;
@@ -148,7 +161,7 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("inintState");
+//    print("inintState");
     animation = new Tween(begin: 0.2, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {});
@@ -169,10 +182,8 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              BlocksBackgroundPic(bgPic,color),
-              bgPic == "nil"
-                  ? TitleWithGlass(newsTitle, textMaxLine)
-                  : TitleWithoutGlass(newsTitle, textMaxLine),
+              BlocksBackgroundPic(bgPic, color),
+              TitleWidget(newsTitle, textMaxLine, (bgPic != "nil")),
               Positioned(
                 child: Row(
                   children: BlockKeyWords(tagsArray),
@@ -185,7 +196,6 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
         ));
   }
 
-
   @override
   void dispose() {
     // TODO: implement dispose
@@ -194,13 +204,13 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   }
 }
 
-Widget BlocksBackgroundPic(url,color) {
+Widget BlocksBackgroundPic(url, color) {
   if (url == "nil") {
     //获取一些颜色
 //    var color = Colors.pink;
     return new Container(
       decoration: new BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
         boxShadow: [ConstantsForTile.BlockShadow],
         color: color,
       ),
@@ -208,11 +218,11 @@ Widget BlocksBackgroundPic(url,color) {
   } else {
     return new Container(
       decoration: new BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
         boxShadow: [ConstantsForTile.BlockShadow],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
 //        child: Image.network(
 //          url,
 //          fit: BoxFit.cover,
@@ -227,8 +237,12 @@ Widget BlocksBackgroundPic(url,color) {
   }
 }
 
-Widget TitleWithGlass(newsTitle, maxLine) {
+Widget TitleWidget(newsTitle, maxLine, withShadow) {
   //这个方法和下一个方法合成一个 等待重构
+  var shadow = BoxDecoration(
+    borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
+    color: Color.fromRGBO(14, 14, 14, 0.3),
+  );
   return new Container(
     child: Text(
       newsTitle,
@@ -237,24 +251,25 @@ Widget TitleWithGlass(newsTitle, maxLine) {
       maxLines: maxLine,
     ),
     padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+    decoration: withShadow ? shadow : null,
   );
 }
 
-Widget TitleWithoutGlass(newsTitle, maxLine) {
-  return new Container(
-    child: Text(
-      newsTitle,
-      style: ConstantsForTile.BlockTitleTextStyle,
-      overflow: TextOverflow.ellipsis,
-      maxLines: maxLine,
-    ),
-    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-      color: Color.fromRGBO(14, 14, 14, 0.3),
-    ),
-  );
-}
+//Widget TitleWithoutGlass(newsTitle, maxLine) {
+//  return new Container(
+//    child: Text(
+//      newsTitle,
+//      style: ConstantsForTile.BlockTitleTextStyle,
+//      overflow: TextOverflow.ellipsis,
+//      maxLines: maxLine,
+//    ),
+//    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+//    decoration: BoxDecoration(
+//      borderRadius: BorderRadius.circular(20),
+//      color: Color.fromRGBO(14, 14, 14, 0.3),
+//    ),
+//  );
+//}
 
 List<Widget> BlockKeyWords(List<String> keywordArray) {
   List<Widget> keyWordList = [];
@@ -278,45 +293,9 @@ List<Widget> BlockKeyWords(List<String> keywordArray) {
   return keyWordList;
 }
 
-//BoxDecoration PicBoxDecoration(bgPic){
-//  if(bgPic == null){
-//    //获取一些颜色
-//    var color = model.getATileColor();
-//    return new BoxDecoration(
-//      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
-//      boxShadow: [BlockShadow],
-//      color: color, //if the pic is null use the colors
-//    );
-//  }
-//  else{
-//    return new BoxDecoration(
-//      image: DecorationImage(
-//        image: NetworkImage(bgPic),
-//        fit: BoxFit.cover,
-//      ),
-//      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
-//      boxShadow: [BlockShadow],
-//    );
-//  }
-//}
-//
-//BoxDecoration TextBoxDecoration(bgPic){
-//  if(bgPic == null){
-//    return BoxDecoration(); // non pic without color
-//  }
-//  else{
-//    return new BoxDecoration(
-//      color: Color.fromRGBO(14, 14, 14, 0.3), //this is the color between the image and text
-//      borderRadius: BorderRadius.circular(ConstantsForTile.tileRadio),
-//    );
-//  }
-//}
-
 class BlocksTapRoute extends StatefulWidget {
   BlocksTapRoute(this.id);
-
   var id;
-
   @override
   State<StatefulWidget> createState() => new _BlocksTapRouteState(id);
 }

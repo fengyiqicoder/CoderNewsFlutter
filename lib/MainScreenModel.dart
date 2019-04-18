@@ -13,10 +13,11 @@ class MainModel{
   var currentCategoryArray = ["swift","python"];
   var currentQueueHeadArray = [1,1];
   //获取tiles
-  List<StaggeredTile> getATileList(){
-    var constantsLength = ConstantsForTile.staggeredTiles6by2.length;
+  List<StaggeredTile> getATileList(heightIs4){
+    var tileArray = heightIs4 ? ConstantsForTile.staggeredTiles4by2 : ConstantsForTile.staggeredTiles3by2;
+    var constantsLength = tileArray.length;
     if (currentTilesIndex < constantsLength){
-      var result = ConstantsForTile.staggeredTiles6by2[currentTilesIndex];
+      var result = tileArray[currentTilesIndex];
       currentTilesIndex = currentTilesIndex == constantsLength-1 ? 0 : currentTilesIndex+1 ;
       return result;
     }else{

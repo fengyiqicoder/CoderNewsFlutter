@@ -86,7 +86,6 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                       horizontal: Constants.gridViewHorizontalGapToScreen))),
           decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
         ),
-        floatingActionButton: Icon(Icons.refresh),
       ),
       onHorizontalDragStart: (DragStartDetails startDetails) {
         print(startDetails.toString());
@@ -103,7 +102,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             //刷新页面
             print("更新数据页面");
             _deltas = 0;
-            opacity = 1.0;
+
             onTapFloatButton();
 
           }
@@ -147,6 +146,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 
     print("DataLanding");
     this.setState(() {
+      opacity = 1.0;
       //刷新页面
       print("updateViews");
       isGettingNewData = false;
@@ -332,15 +332,14 @@ List<Widget> BlockKeyWords(List<String> keywordArray) {
   for (var tagName in keywordArray) {
     var widget = Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(21),
-        color: Color.fromRGBO(96, 98, 92, 0.6),
+        borderRadius: BorderRadius.circular(20),
+        color: Constants.keywordShadowColor,
       ),
       height: 21,
       child: Center(
         child: Text(tagName,
-            style: TextStyle(
-              color: Colors.white70,
-            )),
+            style: Constants.keywordFontWeight,
+            ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8),
     );

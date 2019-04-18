@@ -23,6 +23,7 @@ Future<Map> getMainScreenDatas(List<String> categoryArray,int infoAmount,List<in
             queueHeadString += "$name]";
         }
     }
+    print("getDatas $url");
     Response response = await dio.get(url,queryParameters: { "categoryArray":categoryArrayString,"infoAmount":infoAmount,"queueHeadArray":queueHeadString });
     //转换为JSON
     return response.data;

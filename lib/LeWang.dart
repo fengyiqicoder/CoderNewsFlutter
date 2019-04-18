@@ -33,39 +33,96 @@ class BlockPage extends StatefulWidget {
 }
 
 class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<double> _animation;
+
+  double _deltas;
+  double _begin;
+  double _end;
+  double _maxWidth;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _controller = AnimationController(
+      duration: Duration(microseconds: 1),
+      vsync: this,
+    );
+
+    _maxWidth = ScreenSize.width.toDouble() / Pixel - 80; //位移给定的范围
+    _begin = 1; //动画的开始
+    _end = 1; //动画的技术
+    _deltas = 0; //手势的位移
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+
+    // fit screen datas
     var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
     var PaddingSize = (ScreenSize.height.toDouble() - WidgetHeight + PaddingTopSize.toDouble()) / 2 / Pixel;
 
+    // animation datas
+    _animation = Tween(begin: _begin,end: _end).animate(_controller); //定义动画
+    _controller.forward();
+
     return new Scaffold(
-      body: Stack(
-        children: <Widget>[
-          new StaggeredGridView.count(
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            staggeredTiles: counter ? _staggeredTitles : _staggeredTitles1,
-            //the style of the blocks
-            children: counter ? titles : changedTitles,
-            // the information of the blocks
-            mainAxisSpacing: 12.0,
-            crossAxisSpacing: 12.0,
-            padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
+      body: GestureDetector(
+        child: Opacity(
+          opacity: _animation.value,
+          child: Stack(
+            children: <Widget>[
+              new StaggeredGridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                staggeredTiles: counter ? _staggeredTitles : _staggeredTitles1,
+                //the style of the blocks
+                children: counter ? titles : changedTitles,
+                // the information of the blocks
+                mainAxisSpacing: 12.0,
+                crossAxisSpacing: 12.0,
+                padding: EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
+              ),
+              new Positioned(
+                bottom: 13,
+                left: 3,
+                height: 60,
+                child: new RaisedButton(
+                  shape: CircleBorder(),
+                  child: Icon(Icons.list,size: 33,),
+                  onPressed: onTapFloatButton,
+                  color: DefaultTheme.buttomColor,
+                  textColor: Colors.white70,
+                ),
+              ),
+            ],
           ),
-          new Positioned(
-            bottom: 13,
-            left: 3,
-            height: 60,
-            child: new RaisedButton(
-              shape: CircleBorder(),
-              child: Icon(Icons.list,size: 33,),
-              onPressed: onTapFloatButton,
-              color: DefaultTheme.buttomColor,
-              textColor: Colors.white70,
-            ),
-          ),
-        ],
+        ),
+        onHorizontalDragStart: (DragStartDetails startDetails) {
+          print(startDetails.toString());
+        },
+        onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
+          _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
+          setState(() {
+            if(_deltas < 0 && _deltas.abs() < _maxWidth){ //判断位移的方向并确定滑动距离没有超过给定的范围
+                                                          //需要增加判断条件，判断是否超出给定范围，如果超过给定范围需要调用刷新
+              _begin = _end;
+              _end = 1 - _deltas.abs() / _maxWidth; //对动画的起止位置进行赋值
+              print("begin: $_begin");
+              print("end: $_end");
+            }
+          });
+        },
+        onHorizontalDragEnd: (DragEndDetails endDetails) {
+          _begin = 1;
+          _end = 1;
+          _deltas = 0; //手势监听结束对动画的值初始化 此处需要加入监听条件，如果滑动速度超过给定值需要调用刷新
+                       //实现方法：判断endDetails.velocity是否大于给定值
+          setState(() {});
+        },
       ),
     );
   }

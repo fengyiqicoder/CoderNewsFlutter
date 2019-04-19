@@ -35,6 +35,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   double widthToUpdate;
   double opacity = 1.0;
   bool isGettingNewData = false;
+  var position = Offset(0.0, 0.0);
 
   @override
   void initState() {
@@ -73,20 +74,23 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         body: DecoratedBox(
           child: Opacity(
               opacity: opacity,
-              child: StaggeredGridView.count(
-                  physics: NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  staggeredTiles: currentTile,
-                  //the style of the blocks
-                  children: currentWidgets,
-                  // the information of the blocks
-                  scrollDirection: Axis.vertical,
-                  mainAxisSpacing: ConstantsForTile.axiaGap,
-                  crossAxisSpacing: ConstantsForTile.axiaGap,
-                  padding: EdgeInsets.symmetric(
-                      vertical: PaddingSize,
-                      horizontal: Constants.gridViewHorizontalGapToScreen)
-              )
+              child: Transform.translate(
+                offset: position,
+                child: StaggeredGridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    staggeredTiles: currentTile,
+                    //the style of the blocks
+                    children: currentWidgets,
+                    // the information of the blocks
+                    scrollDirection: Axis.vertical,
+                    mainAxisSpacing: ConstantsForTile.axiaGap,
+                    crossAxisSpacing: ConstantsForTile.axiaGap,
+                    padding: EdgeInsets.symmetric(
+                        vertical: PaddingSize,
+                        horizontal: Constants.gridViewHorizontalGapToScreen)
+                ),
+              ),
           ),
           decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
         ),
@@ -102,6 +106,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
           if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
             var newOpacity = 1 + _deltas / widthToUpdate;
             opacity = newOpacity;
+            position = new Offset(-(1-opacity) * widthToUpdate, 0.0);
           } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
             //刷新页面
             print("更新数据页面");
@@ -125,6 +130,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
           }); //定义动画
         _animation = CurvedAnimation(parent: _animation, curve: Curves.easeInOut);
         _controller.value = opacity;
+        position = Offset(0.0, 0.0);
         _controller.forward(); //?直接重新build
         _deltas = 0;
         //没有达到长度才会调用这个方法

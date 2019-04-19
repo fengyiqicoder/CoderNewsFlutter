@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class Constants{
   static const themeColor = Color(0xFF3C4F65);
-  static const mainScreenBackgroundColor = Colors.black12;
+  static const mainScreenBackgroundColor = Color(0xFFCCCBCB);
   static const changeGridTo4x2Radio = 2;
   static const gridViewHorizontalGapToScreen = 12.0;
   static const animationTimeForSwipeGesture = 270;
@@ -19,7 +19,7 @@ class Constants{
 class ConstantsForTile {
 
   static const BlockTitleTextStyle = TextStyle(
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: FontWeight.w400,
     color: Colors.white,
     shadows: [BlockShadow],
@@ -105,11 +105,37 @@ class ConstantsForTile {
       StaggeredTile.count(2, 1),
     ],
     [
+      StaggeredTile.count(2, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(2, 1),
+    ],
+    [
       StaggeredTile.count(1, 2),
       StaggeredTile.count(1, 1),
       StaggeredTile.count(1, 2),
       StaggeredTile.count(1, 2),
       StaggeredTile.count(1, 1),
+    ],
+    [
+      StaggeredTile.count(2, 1),
+      StaggeredTile.count(2, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 2),
+    ],
+    [
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(2, 1),
+    ],
+    [
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(2, 1),
     ],
     [
       StaggeredTile.count(1, 1),
@@ -118,6 +144,14 @@ class ConstantsForTile {
       StaggeredTile.count(1, 1),
       StaggeredTile.count(1, 1),
       StaggeredTile.count(2, 1),
+    ],
+    [
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 2),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 1),
+      StaggeredTile.count(1, 1),
     ],
   ];
 

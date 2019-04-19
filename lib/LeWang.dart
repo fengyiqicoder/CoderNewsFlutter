@@ -39,6 +39,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   double _deltas;
   double widthToUpdate;
   double opacity = 1.0;
+  var position = Offset(0.0, 0.0);
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
     super.initState();
 
     _controller = AnimationController(
-      duration: Duration(milliseconds:300),
+      duration: Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -67,80 +68,92 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         Pixel;
 
     return new Scaffold(
-      body: GestureDetector(
-        child: Opacity(
-          opacity: opacity,
-          child: Stack(
-            children: <Widget>[
-              new StaggeredGridView.count(
+        body: new Stack(
+      children: <Widget>[
+        GestureDetector(
+          child: Opacity(
+            opacity: opacity,
+            child: Transform.translate(
+              offset: position,
+              child: new StaggeredGridView.count(
                 physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
-                staggeredTiles: counter ? _staggeredTitles : _staggeredTitles1,
+                staggeredTiles:
+                counter ? _staggeredTitles : _staggeredTitles1,
                 //the style of the blocks
                 children: counter ? titles : changedTitles,
                 // the information of the blocks
                 mainAxisSpacing: 12.0,
                 crossAxisSpacing: 12.0,
-                padding:
-                    EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
+                padding: EdgeInsets.symmetric(
+                    vertical: PaddingSize, horizontal: 8),
               ),
-              new Positioned(
-                bottom: 13,
-                left: 3,
-                height: 60,
-                child: new RaisedButton(
-                  shape: CircleBorder(),
-                  child: Icon(
-                    Icons.list,
-                    size: 33,
-                  ),
-                  onPressed: onTapFloatButton,
-                  color: DefaultTheme.buttomColor,
-                  textColor: Colors.white70,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        onHorizontalDragStart: (DragStartDetails startDetails) {
-          print(startDetails.toString());
-        },
-        onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
-          _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
-          setState(() {
-            //更新状态
-            print("delta $widthToUpdate  $_deltas");
-            if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
-              //判断位移的方向并确定滑动距离没有超过给定的范围
-              //需要增加判断条件，判断是否超出给定范围，如果超过给定范围需要调用刷新
-              var newOpacity = 1 + _deltas / widthToUpdate;
-              opacity = newOpacity;
-            } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
-              //刷新页面
-              print("更新数据页面");
-            }
-          });
-        },
-        onHorizontalDragEnd: (DragEndDetails endDetails) {
-          print("手势结束");
-          print(opacity);
-          _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
-            ..addListener(() {
-            setState(() {//执行动画
-              opacity = _animation.value;
+          onHorizontalDragStart: (DragStartDetails startDetails) {
+            print(startDetails.toString());
+          },
+          onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
+            _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
+            setState(() {
+              //更新状态
+              print("delta $widthToUpdate  $_deltas");
+              if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
+                //判断位移的方向并确定滑动距离没有超过给定的范围
+                //需要增加判断条件，判断是否超出给定范围，如果超过给定范围需要调用刷新
+                var newOpacity = 1 + _deltas / widthToUpdate;
+                opacity = newOpacity;
+                position = new Offset(-(1-opacity) * widthToUpdate, 0.0);
+              } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
+                //刷新页面
+                print("更新数据页面");
+              }
             });
-          }); //定义动画
-          _animation = CurvedAnimation(parent: _animation, curve: Curves.easeIn);
-          _controller.value = opacity;
-          _controller.forward(); //?直接重新build
-          _deltas = 0;
-          //没有达到长度才会调用这个方法
-        },
-      ),
-    );
+          },
+          onHorizontalDragEnd: (DragEndDetails endDetails) {
+            print("手势结束");
+            print(opacity);
+            _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
+              ..addListener(() {
+                setState(() {
+                  //执行动画
+                  opacity = _animation.value;
+                  position = Offset(-(1-opacity) * widthToUpdate, 0.0);
+                });
+              }); //定义动画
+            _animation =
+                CurvedAnimation(parent: _animation, curve: Curves.easeIn);
+            position = Offset(0.0, 0.0);
+            _controller.value = opacity;
+            _controller.forward(); //?直接重新build
+            _deltas = 0;
+            //没有达到长度才会调用这个方法
+          },
+        ),
+        new Positioned(
+          bottom: 13,
+          height: 50,
+          child: new Hero(
+            tag: "FloatButton",
+            child: new RaisedButton(
+              shape: CircleBorder(),
+              child: Icon(
+                Icons.more_horiz,
+                size: 33,
+              ),
+              color: DefaultTheme.buttomColor,
+              textColor: Colors.white70,
+              onPressed: () {
+
+              },
+            ),
+          )
+        ),
+      ],
+    ));
   }
 
-  void onTapFloatButton() {
+  void onTapFloatButton(BuildContext context) {
     print("onTapFloatButton");
   }
 }
@@ -285,6 +298,26 @@ List<Widget> BlocksKeyWords(keyWords) {
       padding: EdgeInsets.symmetric(horizontal: 8),
     )
   ];
+}
+
+class OnTapFloatButtonRoute extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() => OnTapFloatButtonRouteState();
+}
+
+class OnTapFloatButtonRouteState extends State<OnTapFloatButtonRoute> with TickerProviderStateMixin{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return new Hero(
+      tag: "FloatButton",
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(179, 179, 179, 0.3),
+        ),
+      ),
+    );
+  }
 }
 
 // static fake datas

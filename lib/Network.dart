@@ -1,9 +1,8 @@
 import 'package:dio/dio.dart';
 
 Future<Map> getMainScreenDatas(List<String> categoryArray,int infoAmount,List<int> queueHeadArray) async {//加入函数
-//    const url = "http://127.0.0.1:8000/find/?";// Android 10.0.2.2  Apple 127.0.0.1
+    const url = "http://gianttough.cn/coder_news/find/?";// Android 10.0.2.2  Apple 127.0.0.1
 //    const url = "http://10.0.2.2:8000/find/?";
-    const url = "http://gianttough.cn/coder_news/find/?";
     Dio dio = new Dio();
     var categoryArrayString = "[";
     for (var index = 0;index < categoryArray.length;index++){

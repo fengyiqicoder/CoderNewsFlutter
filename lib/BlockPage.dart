@@ -63,8 +63,9 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             PaddingTopSize.toDouble()) /
         2 /
         Pixel;
-    print("Building Page 透明度 $opacity" );
-    if (currentTile == []) {
+    print("Building Page 透明度 $opacity $currentWidgets $currentTile" );
+    if (currentWidgets.length == 0) {
+      print("返回空Views");
       return Scaffold(); //return emtry views
     }
     return GestureDetector(
@@ -112,7 +113,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         });
       },
       onHorizontalDragEnd: (DragEndDetails endDetails) {
-        if (isGettingNewData) {return;};//判断是否正在获取数据
+        if (isGettingNewData) {return;}//判断是否正在获取数据
         print("手势结束");
         print(opacity);
         _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
@@ -130,20 +131,6 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       },
 
     );
-  }
-
-  @override
-  void didUpdateWidget(BlockPage oldWidget) {
-    // TODO: implement didUpdateWidget
-    super.didUpdateWidget(oldWidget);
-    print("didUpdateWidget");
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-    print("changeDependencies");
   }
 
   @override
@@ -169,8 +156,8 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
     var widgetList = model.getWidgets(tileList);
     currentWidgets = await widgetList; //更新数据
     currentTile = tileList;
-
     print("DataLanding");
+
     this.setState(() {
       //刷新页面
       print("updateViews");

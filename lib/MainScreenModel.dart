@@ -10,8 +10,8 @@ class MainModel{
   var currentTilesIndex = 0;
   var currentTilesColorIndex = 0;
 
-  var currentCategoryArray = ["swift","python"];
-  var currentQueueHeadArray = [1,1];
+  var currentCategoryArray = ["java","python","swift"];
+  var currentQueueHeadArray = [1,1,1];
   //获取tiles
   List<StaggeredTile> getATileList(heightIs4){
     var tileArray = heightIs4 ? ConstantsForTile.staggeredTiles4by2 : ConstantsForTile.staggeredTiles3by2;
@@ -37,6 +37,7 @@ class MainModel{
   }
   //获取Widgets
   Future<List<Blocks>> getWidgets(List tileList) async {
+    print("GetWidgets");
     var rawJson = await getMainScreenDatas(currentCategoryArray, tileList.length, currentQueueHeadArray);
     List jsonArray = rawJson["data"];
     List<Blocks> result = [];
@@ -54,8 +55,7 @@ class MainModel{
 //      print(data);
       var id = data["infoId"].toString();
       var height = tileList[indexForData].mainAxisCellCount;
-      print(".mainAxisCellCount");
-      print(height);
+//      print(height);
       var color = getATileColor();
       Blocks widget = Blocks.withJson(Key(id),data,height*3,color);
       result.add(widget);

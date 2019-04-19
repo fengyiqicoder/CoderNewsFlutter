@@ -154,7 +154,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   }
 
   void onTapFloatButton(BuildContext context) {
-    print("onTapFloatButton");
+    print("onTapFloatButto");
   }
 }
 

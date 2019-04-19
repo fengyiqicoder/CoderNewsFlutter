@@ -65,6 +65,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         2 /
         Pixel;
     print("Building Page 透明度 $opacity $currentWidgets $currentTile" );
+    print(position);
     if (currentWidgets.length == 0) {
       print("返回空Views");
       return Scaffold(); //return emtry views
@@ -111,7 +112,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             //刷新页面
             print("更新数据页面");
             _deltas = 0;
-
+            position = Offset(0.0, 0.0);
             onTapFloatButton();
 
           }

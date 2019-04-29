@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
 class FloatButton extends StatefulWidget {
   @override
@@ -45,25 +46,105 @@ class MenuPageState extends State<MenuPage> {
     // TODO: implement build
     return Hero(
       tag: "Menu",
-      child: Container(
-        child: Container(
-          child: Text(
-            "Menu",
+      child: Scaffold(
+        body: Container(
+          child: Container(
+            child: GridView(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                childAspectRatio: 1,
+                crossAxisSpacing: 4.0,
+                mainAxisSpacing: 4.0
+              ),
+              children: MenuButtons,
+            ),
+            color: Color.fromRGBO(14, 14, 14, 0.3),
           ),
-          color: Color.fromRGBO(14, 14, 14, 0.3),
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.amber[600],
-              Colors.greenAccent,
-              Colors.lightBlue,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.amber[600],
+                Colors.greenAccent,
+                Colors.lightBlue,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
         ),
-      ),
+      )
     );
   }
 }
+
+List<Widget> MenuButtons = [
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.home),
+        Text("Home"),
+      ],
+    ),
+    onPressed: (){},
+  ),
+
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.view_list),
+        Text("Tops"),
+      ],
+    ),
+    onPressed: (){},
+  ),
+
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.person),
+        Text("Self"),
+      ],
+    ),
+    onPressed: (){},
+  ),
+
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.favorite),
+        Text("Favor"),
+      ],
+    ),
+    onPressed: (){},
+  ),
+
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.settings_ethernet),
+        Text("Settings"),
+      ],
+    ),
+    onPressed: (){},
+  ),
+];

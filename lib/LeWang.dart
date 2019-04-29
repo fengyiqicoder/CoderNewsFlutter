@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:ui';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'MenuPage.dart';
 
 const BlockTitleTextStyle = TextStyle(
   fontSize: 22,
@@ -78,15 +79,14 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
               child: new StaggeredGridView.count(
                 physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
-                staggeredTiles:
-                counter ? _staggeredTitles : _staggeredTitles1,
+                staggeredTiles: counter ? _staggeredTitles : _staggeredTitles1,
                 //the style of the blocks
                 children: counter ? titles : changedTitles,
                 // the information of the blocks
                 mainAxisSpacing: 12.0,
                 crossAxisSpacing: 12.0,
-                padding: EdgeInsets.symmetric(
-                    vertical: PaddingSize, horizontal: 8),
+                padding:
+                    EdgeInsets.symmetric(vertical: PaddingSize, horizontal: 8),
               ),
             ),
           ),
@@ -103,7 +103,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                 //需要增加判断条件，判断是否超出给定范围，如果超过给定范围需要调用刷新
                 var newOpacity = 1 + _deltas / widthToUpdate;
                 opacity = newOpacity;
-                position = new Offset(-(1-opacity) * widthToUpdate, 0.0);
+                position = new Offset(-(1 - opacity) * widthToUpdate, 0.0);
               } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
                 //刷新页面
                 print("更新数据页面");
@@ -118,7 +118,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                 setState(() {
                   //执行动画
                   opacity = _animation.value;
-                  position = Offset(-(1-opacity) * widthToUpdate, 0.0);
+                  position = Offset(-(1 - opacity) * widthToUpdate, 0.0);
                 });
               }); //定义动画
             _animation =
@@ -130,25 +130,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             //没有达到长度才会调用这个方法
           },
         ),
-        new Positioned(
-          bottom: 13,
-          height: 50,
-          child: new Hero(
-            tag: "FloatButton",
-            child: new RaisedButton(
-              shape: CircleBorder(),
-              child: Icon(
-                Icons.more_horiz,
-                size: 33,
-              ),
-              color: DefaultTheme.buttomColor,
-              textColor: Colors.white70,
-              onPressed: () {
-
-              },
-            ),
-          )
-        ),
+        FloatButton(),
       ],
     ));
   }
@@ -300,25 +282,23 @@ List<Widget> BlocksKeyWords(keyWords) {
   ];
 }
 
-class OnTapFloatButtonRoute extends StatefulWidget{
+class OnTapFloatButtonRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => OnTapFloatButtonRouteState();
 }
 
-class OnTapFloatButtonRouteState extends State<OnTapFloatButtonRoute> with TickerProviderStateMixin{
+class OnTapFloatButtonRouteState extends State<OnTapFloatButtonRoute>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Hero(
       tag: "FloatButton",
-      child: Container(
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(179, 179, 179, 0.3),
-        ),
-      ),
+      child: MenuPage(),
     );
   }
 }
+
 
 // static fake datas
 List<StaggeredTile> _staggeredTitles = <StaggeredTile>[

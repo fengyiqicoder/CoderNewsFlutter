@@ -4,6 +4,7 @@ import 'MainScreenModel.dart';
 import 'Constants.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'MenuPage.dart';
 
 //数据控制
 var model = MainModel();
@@ -71,30 +72,35 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       return Scaffold(); //return emtry views
     }
     return GestureDetector(
-      child: Scaffold(
-        body: DecoratedBox(
-          child: Opacity(
-              opacity: opacity,
-              child: Transform.translate(
-                offset: position,
-                child: StaggeredGridView.count(
-                    physics: NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    staggeredTiles: currentTile,
-                    //the style of the blocks
-                    children: currentWidgets,
-                    // the information of the blocks
-                    scrollDirection: Axis.vertical,
-                    mainAxisSpacing: ConstantsForTile.axiaGap,
-                    crossAxisSpacing: ConstantsForTile.axiaGap,
-                    padding: EdgeInsets.symmetric(
-                        vertical: PaddingSize,
-                        horizontal: Constants.gridViewHorizontalGapToScreen)
+      child: Stack(
+        children: <Widget>[
+          Scaffold(
+            body: DecoratedBox(
+              child: Opacity(
+                opacity: opacity,
+                child: Transform.translate(
+                  offset: position,
+                  child: StaggeredGridView.count(
+                      physics: NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      staggeredTiles: currentTile,
+                      //the style of the blocks
+                      children: currentWidgets,
+                      // the information of the blocks
+                      scrollDirection: Axis.vertical,
+                      mainAxisSpacing: ConstantsForTile.axiaGap,
+                      crossAxisSpacing: ConstantsForTile.axiaGap,
+                      padding: EdgeInsets.symmetric(
+                          vertical: PaddingSize,
+                          horizontal: Constants.gridViewHorizontalGapToScreen)
+                  ),
                 ),
               ),
+              decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
+            ),
           ),
-          decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
-        ),
+          FloatButton(),
+        ],
       ),
       onHorizontalDragStart: (DragStartDetails startDetails) {
         print(startDetails.toString());
@@ -113,8 +119,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             print("更新数据页面");
             _deltas = 0;
             position = Offset(0.0, 0.0);
-            onTapFloatButton();
-
+            FreshDatas();
           }
         });
       },
@@ -147,7 +152,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
     _controller.dispose();
   }
 
-  void onTapFloatButton() {
+  void FreshDatas() {
 
     //在这里获取数据
 //    currentWidgets.forEach((view) {

@@ -10,26 +10,28 @@ class FloatButtonState extends State<FloatButton> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Positioned(
-        bottom: 13,
-        height: 50,
-        child: new Hero(
-          tag: "Menu",
-          child: new RaisedButton(
-            shape: CircleBorder(),
-            child: Icon(
-              Icons.more_horiz,
-              size: 33,
-            ),
-            color: Colors.pinkAccent,
-            textColor: Colors.white70,
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return MenuPage();
-              }));
-            },
+      bottom: 13,
+      height: 50,
+      child: new Hero(
+        tag: "Menu",
+        child: new RaisedButton(
+        shape: CircleBorder(),
+          child: Icon(
+            Icons.more_horiz,
+            size: 33,
           ),
-        ));
+          color: Colors.pinkAccent,
+          textColor: Colors.white70,
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return MenuPage();
+            }));
+          },
+        ),
+      )
+    );
   }
+
 }
 
 class MenuPage extends StatefulWidget {

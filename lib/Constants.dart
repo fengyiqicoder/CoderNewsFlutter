@@ -2,12 +2,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class Constants{
+  static const maxline = 4;
   static const themeColor = Color(0xFF3C4F65);
   static const mainScreenBackgroundColor = Color(0xFFCCCBCB);
   static const changeGridTo4x2Radio = 2;
   static const gridViewHorizontalGapToScreen = 12.0;
   static const animationTimeForSwipeGesture = 270;
-  static const widthToUpdateRadioToScreen = 0.43;
+  static const widthToUpdateRadioToScreen = 0.6;
   static const animationTimeForViewToShowUp =  550;
   static const keywordShadowColor = Color(0x30FFFFFF);
   static const keywordFontWeight = TextStyle(

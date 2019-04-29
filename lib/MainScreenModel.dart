@@ -57,7 +57,7 @@ class MainModel{
       var height = tileList[indexForData].mainAxisCellCount;
 //      print(height);
       var color = getATileColor();
-      Blocks widget = Blocks.withJson(Key(id),data,height*3,color);
+      Blocks widget = Blocks.withJson(Key(id),data,height*Constants.maxline,color);
       result.add(widget);
     });
 

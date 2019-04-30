@@ -59,6 +59,8 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 //    print("屏幕信息");
 //    print(screenRatio < Constants.changeGridTo4x2Radio);
     var gridHeight = gridHeightIs4 ? 4 : 3;
+//    print("gridHeightIs4");
+//    print(gridHeightIs4);
     var WidgetHeight = (ScreenSize.width.toDouble() / 2) * gridHeight;
     var PaddingSize = (ScreenSize.height.toDouble() -
             WidgetHeight +
@@ -168,6 +170,8 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
     var widgetList = model.getWidgets(tileList);
     currentWidgets = await widgetList; //更新数据
     currentTile = tileList;
+    //保存这两个数组
+    model.saveScreenData(currentTile, currentWidgets);
     print("DataLanding");
 
     this.setState(() {

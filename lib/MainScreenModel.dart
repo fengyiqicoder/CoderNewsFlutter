@@ -23,10 +23,12 @@ class MainModel{
   var oldScreenShowingIndex = 0;
 
   void saveScreenData(tilesArray,blocksArray){
-    if (_oldScreenDatas.length == 4){
+    if (_oldScreenDatas.length == 5){
       _oldScreenDatas.removeAt(0);
     }
     _oldScreenDatas.add(Tuple2(tilesArray, blocksArray));
+    print("savedScreenOldData");
+    print(_oldScreenDatas.length);
   }
 
   //获取上一页或者下一页的代码

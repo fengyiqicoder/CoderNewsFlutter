@@ -4,17 +4,44 @@ import 'package:flutter/material.dart';
 import 'Constants.dart';
 import 'BlockPage.dart';
 import 'package:tuple/tuple.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainModel{
 
-  //添加
   //获取数据颜色
   var currentTilesIndex = 0;
   var currentTilesColorIndex = 0;
-  var currentCategoryArray = ["python","swift"];
-  var currentQueueHeadArray = [1,1];//储存这个值
+  List<String> currentCategoryArray = ["python", "swift"];
+  List<int> currentQueueHeadArray = [1,1];//储存这个值
 
   //获取每次登陆时间，进行判定是否需要更新queueHead
+
+  //储存分类数组和表头数组到本地
+  void saveArrays() async {
+    return;//暂时不进行储存
+    SharedPreferences defualts = await SharedPreferences.getInstance();
+    defualts.setStringList("currentCategoryArray", currentCategoryArray);
+    for (var index = 0;index<currentCategoryArray.length;index++){
+      var key = "currentQueueHeadArray" + index.toString();
+      var value = currentQueueHeadArray[index];
+      defualts.setInt(key, value);
+    }
+  }
+  //获取分类数组和表头数组
+  Future<Null> getArray() async{
+    SharedPreferences defualts = await SharedPreferences.getInstance();
+    List<int> array = [];
+    currentCategoryArray = defualts.getStringList("currentCategoryArray") ?? [];
+    for (var index = 0;index<currentCategoryArray.length;index++){
+      var key = "currentQueueHeadArray" + index.toString();
+      var item = defualts.getInt(key);
+      array.add(item);
+    }
+    currentQueueHeadArray = array;
+    print("获取数据");
+    print(currentCategoryArray);
+    print(currentQueueHeadArray);
+  }
 
   //保存近5个页面数据备用 使用元组（第三方）
   List<Tuple2<List<StaggeredTile>, List<Blocks>>> _oldScreenDatas = [];
@@ -46,13 +73,9 @@ class MainModel{
     }
   }
 
-
   Tuple2<List<StaggeredTile>, List<Blocks>> getOldScreenData(index){//index只能在1~5
     return _oldScreenDatas[5-index];
   }
-
-
-
 
   //获取tiles
   List<StaggeredTile> getATileList(heightIs4){
@@ -102,12 +125,10 @@ class MainModel{
       Blocks widget = Blocks.withJson(Key(id),data,height*Constants.maxline,color);
       result.add(widget);
     });
-    //更新
+    //更新本地数据
+    saveArrays();
     return result;
   }
-
-
-
 
 }
 

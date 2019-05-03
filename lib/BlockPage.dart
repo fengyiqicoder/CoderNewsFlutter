@@ -20,9 +20,9 @@ class BlockPage extends StatefulWidget {
 
   @override
   BlockPageState createState() {
-//    print("CreateState");
-    return new BlockPageState();
+    return BlockPageState();
   }
+
 }
 
 class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
@@ -40,10 +40,16 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    print("initState");
     super.initState();
     //在这里获取网络数据
-    getDatasForView();
+      getDatasForView();
+    //获取本地数据代码 暂时不使用
+//    model.getArray().then((nothing){//获取本地数据之后才能获取网络数据
+//      print("创建State只有一次");
+//      //在这里获取网络数据
+//      getDatasForView();
+//    });
+    print("initState");
     //animations
     _controller = AnimationController(
       duration: Duration(milliseconds: Constants.animationTimeForSwipeGesture),

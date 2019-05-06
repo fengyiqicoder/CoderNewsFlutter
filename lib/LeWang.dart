@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:ui';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'MenuPage.dart';
+import 'LeftDrawer.dart';
+
 
 const BlockTitleTextStyle = TextStyle(
   fontSize: 22,
@@ -69,6 +70,8 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         Pixel;
 
     return new Scaffold(
+      drawer: LeftDrawer(
+      ),
         body: new Stack(
       children: <Widget>[
         GestureDetector(

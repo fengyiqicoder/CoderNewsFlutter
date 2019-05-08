@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'dart:async';
+//import 'package:url_launcher/url_launcher.dart';
 import 'MainScreenModel.dart';
 import 'Constants.dart';
 import 'dart:ui';
@@ -22,13 +24,13 @@ class BlockPage extends StatefulWidget {
   BlockPageState createState() {
     return BlockPageState();
   }
-
 }
 
 class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   //从Model获取数据进行展示
   List<StaggeredTile> currentTile = [];
   List<Blocks> currentWidgets = [];
+
   //Animations
   AnimationController _controller;
   Animation<double> _animation;
@@ -42,7 +44,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     //在这里获取网络数据
-      getDatasForView();
+    getDatasForView();
     //获取本地数据代码 暂时不使用
 //    model.getArray().then((nothing){//获取本地数据之后才能获取网络数据
 //      print("创建State只有一次");
@@ -56,7 +58,8 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       vsync: this,
     );
 
-    widthToUpdate = (ScreenSize.width.toDouble() / Pixel) * Constants.widthToUpdateRadioToScreen; //位移给定的范围
+    widthToUpdate = (ScreenSize.width.toDouble() / Pixel) *
+        Constants.widthToUpdateRadioToScreen; //位移给定的范围
     _deltas = 0; //手势的位移
   }
 
@@ -73,7 +76,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             PaddingTopSize.toDouble()) /
         2 /
         Pixel;
-    print("Building Page 透明度 $opacity $currentWidgets $currentTile" );
+    print("Building Page 透明度 $opacity $currentWidgets $currentTile");
     print(position);
     if (currentWidgets.length == 0) {
       print("返回空Views");
@@ -100,11 +103,11 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
                       crossAxisSpacing: ConstantsForTile.axiaGap,
                       padding: EdgeInsets.symmetric(
                           vertical: PaddingSize,
-                          horizontal: Constants.gridViewHorizontalGapToScreen)
-                  ),
+                          horizontal: Constants.gridViewHorizontalGapToScreen)),
                 ),
               ),
-              decoration: BoxDecoration(color: Constants.mainScreenBackgroundColor),
+              decoration:
+                  BoxDecoration(color: Constants.mainScreenBackgroundColor),
             ),
           ),
           FloatButton(),
@@ -115,13 +118,15 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       },
       onHorizontalDragUpdate: (DragUpdateDetails updateDetails) {
         _deltas = updateDetails.delta.dx + _deltas; //记录手势位移
-        if (isGettingNewData) {return;}
+        if (isGettingNewData) {
+          return;
+        }
         setState(() {
           //更新状态
           if (_deltas < 0 && _deltas.abs() < widthToUpdate) {
             var newOpacity = 1 + _deltas / widthToUpdate;
             opacity = newOpacity;
-            position = new Offset(-(1-opacity) * widthToUpdate, 0.0);
+            position = new Offset(-(1 - opacity) * widthToUpdate, 0.0);
           } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
             //刷新页面
             print("更新数据页面");
@@ -132,7 +137,9 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         });
       },
       onHorizontalDragEnd: (DragEndDetails endDetails) {
-        if (isGettingNewData) {return;}//判断是否正在获取数据
+        if (isGettingNewData) {
+          return;
+        } //判断是否正在获取数据
         print("手势结束");
         print(opacity);
         _animation = Tween(begin: opacity, end: 1.0).animate(_controller)
@@ -142,14 +149,14 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
               opacity = _animation.value;
             });
           }); //定义动画
-        _animation = CurvedAnimation(parent: _animation, curve: Curves.easeInOut);
+        _animation =
+            CurvedAnimation(parent: _animation, curve: Curves.easeInOut);
         _controller.value = opacity;
         position = Offset(0.0, 0.0);
         _controller.forward(); //?直接重新build
         _deltas = 0;
         //没有达到长度才会调用这个方法
       },
-
     );
   }
 
@@ -161,7 +168,6 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   }
 
   void FreshDatas() {
-
     //在这里获取数据
 //    currentWidgets.forEach((view) {
 //      view.controller.reverse();
@@ -209,20 +215,25 @@ class Blocks extends StatefulWidget {
   var bgPic;
   var textMaxLine;
   List<String> tagsArray = [];
+
   //静态方法找到State
 //  static BlocksState of(BuildContext context) => context.ancestorStateOfType(const TypeMatcher<BlocksState>());
 
   var context;
   var color;
+
   //创建state
   AnimationController controller;
+
   @override
   BlocksState createState() {
 //    print("CreateState");
     var newState =
         BlocksState(url, newsTitle, bgPic, tagsArray, textMaxLine, color);
     controller = new AnimationController(
-        duration: const Duration(milliseconds: Constants.animationTimeForViewToShowUp), vsync: newState);
+        duration: const Duration(
+            milliseconds: Constants.animationTimeForViewToShowUp),
+        vsync: newState);
 //    print("CreateController");
     newState.controller = controller;
     this.context = newState.context;
@@ -242,11 +253,14 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   var textMaxLine;
   var color;
   List<String> tagsArray = [];
+  List<String> urlsArray= [];
 
   //Animation
   Animation<double> animation;
   AnimationController controller;
 
+  // WebViewController
+  Completer<WebViewController> _controller;
   //lifeCycle
 
   @override
@@ -261,6 +275,8 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
     animation = CurvedAnimation(parent: animation, curve: Curves.easeInOutCirc);
     //启动动画(正向执行)
     controller.forward();
+    _controller = Completer<WebViewController>();
+
   }
 
   @override
@@ -285,25 +301,36 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
               ),
             ],
           ),
-          onTap: (){
+          onTap: () {
             print("url to show $url");
-            Navigator.push(
-                context,
-                new MaterialPageRoute(builder: (context) {
-                  return new Scaffold(
-                    appBar: AppBar(
-                      title: Text(newsTitle),
-                      backgroundColor: bgPic=="" ? color:Constants.themeColor,
+            Navigator.push(context, new MaterialPageRoute(builder: (context) {
+              return new Scaffold(
+                appBar: AppBar(
+                    title: Text(newsTitle),
+                    backgroundColor: bgPic == "" ? color : Constants.themeColor,
+                    leading: NavigationControls(_controller.future),
+                    actions: <Widget>[
+
+                    ],
+                ),
+                floatingActionButton: FloatingActionButton(
+                    backgroundColor: bgPic == "" ? color : Constants.themeColor,
+                    child: IconButton(
+                        icon: Icon(Icons.thumb_up),
+                        onPressed: null
                     ),
-                    body: new WebView(
-                      initialUrl: url,
-                    ),
-                  );
-                })
-            );
+                    onPressed: null,
+                ),
+                body: new WebView(
+                  initialUrl: url,
+                  onWebViewCreated: (WebViewController webViewController) {
+                    _controller.complete(webViewController);
+                  },
+                ),
+              );
+            }));
           },
-        )
-    );
+        ));
   }
 
 
@@ -393,9 +420,10 @@ List<Widget> BlockKeyWords(List<String> keywordArray) {
       ),
       height: 21,
       child: Center(
-        child: Text(tagName,
-            style: Constants.keywordFontWeight,
-            ),
+        child: Text(
+          tagName,
+          style: Constants.keywordFontWeight,
+        ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8),
     );
@@ -406,7 +434,9 @@ List<Widget> BlockKeyWords(List<String> keywordArray) {
 
 class BlocksTapRoute extends StatefulWidget {
   BlocksTapRoute(this.id);
+
   var id;
+
   @override
   State<StatefulWidget> createState() => new _BlocksTapRouteState(id);
 }
@@ -424,5 +454,54 @@ class _BlocksTapRouteState extends State<BlocksTapRoute> {
         child: Text(id.toString()),
       ),
     );
+  }
+}
+
+
+class NavigationControls extends StatelessWidget {
+  const NavigationControls(this._webViewControllerFuture)
+      : assert(_webViewControllerFuture != null);
+
+  final Future<WebViewController> _webViewControllerFuture;
+
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<WebViewController>(
+      future: _webViewControllerFuture,
+      builder:
+          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
+        final bool webViewReady =
+            snapshot.connectionState == ConnectionState.done;
+        final WebViewController controller = snapshot.data;
+        return Row(
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: !webViewReady ? null : () => navigate(context, controller, goBack: true),
+            ),
+//            IconButton(
+//              icon: const Icon(Icons.arrow_forward_ios),
+//              onPressed: !webViewReady
+//                  ? null
+//                  : () => navigate(context, controller, goBack: false),
+//            ),
+          ],
+        );
+      },
+    );
+  }
+
+  navigate(BuildContext context, WebViewController controller,
+      {bool goBack: false}) async {
+    bool canNavigate =
+    goBack ? await controller.canGoBack() : await controller.canGoForward();
+    var url = await controller.currentUrl();
+    print(url);
+    if (canNavigate) {
+      goBack ? controller.goBack() : controller.goForward();
+    } else {
+        Navigator.pop(context);
+    }
   }
 }

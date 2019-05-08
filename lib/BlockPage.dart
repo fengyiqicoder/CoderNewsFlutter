@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:async';
-//import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'MainScreenModel.dart';
 import 'Constants.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'MenuPage.dart';
+import 'package:flutter/services.dart';
+
 
 //数据控制
 var model = MainModel();
@@ -310,13 +312,13 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
                     backgroundColor: bgPic == "" ? color : Constants.themeColor,
                     leading: NavigationControls(_controller.future),
                     actions: <Widget>[
-
+                      Menu(_controller.future, url)
                     ],
                 ),
                 floatingActionButton: FloatingActionButton(
                     backgroundColor: bgPic == "" ? color : Constants.themeColor,
                     child: IconButton(
-                        icon: Icon(Icons.thumb_up),
+                        icon: Icon(Icons.favorite_border),
                         onPressed: null
                     ),
                     onPressed: null,
@@ -504,4 +506,49 @@ class NavigationControls extends StatelessWidget {
         Navigator.pop(context);
     }
   }
+}
+
+class Menu extends StatelessWidget {
+  Menu(this._webViewControllerFuture, this.url);
+  final Future<WebViewController> _webViewControllerFuture;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: _webViewControllerFuture,
+        builder: (BuildContext context, AsyncSnapshot<WebViewController> controller) {
+          if(!controller.hasData) return new Container();
+          return PopupMenuButton<String>(
+              itemBuilder: (BuildContext context) => <PopupMenuItem<String>> [
+                const PopupMenuItem(
+                    value: "复制URL",
+                    child: Text("复制URL"),
+                ),
+                const PopupMenuItem(
+                    value: "在浏览器中打开",
+                    child: Text("在浏览器中打开"),
+                )
+              ],
+            onSelected: (String value) async {
+                var currentUrl = await controller.data.currentUrl();
+                if(value == "复制URL") {
+                  print(currentUrl);
+                  Clipboard.setData(new ClipboardData(text: currentUrl)).then((result) {
+                    final snackBar = SnackBar(
+                      content: Text("复制成功"),
+                    );
+                    Scaffold.of(context).showSnackBar(snackBar);
+                  });
+                }
+                if(value == "在浏览器中打开") {
+                  print(currentUrl);
+                  launch(currentUrl);
+                }
+            },
+          );
+        },
+    );
+  }
+
 }

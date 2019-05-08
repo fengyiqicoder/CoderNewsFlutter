@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart';
 import 'MainScreenModel.dart';
 import 'Constants.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'MenuPage.dart';
-import 'package:flutter/services.dart';
 
 
 //数据控制
@@ -482,12 +482,6 @@ class NavigationControls extends StatelessWidget {
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: !webViewReady ? null : () => navigate(context, controller, goBack: true),
             ),
-//            IconButton(
-//              icon: const Icon(Icons.arrow_forward_ios),
-//              onPressed: !webViewReady
-//                  ? null
-//                  : () => navigate(context, controller, goBack: false),
-//            ),
           ],
         );
       },
@@ -522,8 +516,8 @@ class Menu extends StatelessWidget {
           return PopupMenuButton<String>(
               itemBuilder: (BuildContext context) => <PopupMenuItem<String>> [
                 const PopupMenuItem(
-                    value: "复制URL",
-                    child: Text("复制URL"),
+                    value: "分享",
+                    child: Text("分享"),
                 ),
                 const PopupMenuItem(
                     value: "在浏览器中打开",
@@ -532,14 +526,9 @@ class Menu extends StatelessWidget {
               ],
             onSelected: (String value) async {
                 var currentUrl = await controller.data.currentUrl();
-                if(value == "复制URL") {
+                if(value == "分享") {
                   print(currentUrl);
-                  Clipboard.setData(new ClipboardData(text: currentUrl)).then((result) {
-                    final snackBar = SnackBar(
-                      content: Text("复制成功"),
-                    );
-                    Scaffold.of(context).showSnackBar(snackBar);
-                  });
+                  Share.share(currentUrl);
                 }
                 if(value == "在浏览器中打开") {
                   print(currentUrl);

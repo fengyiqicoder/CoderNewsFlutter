@@ -37,7 +37,7 @@ dependencies:
   path_provider: ^0.5.0
   #使用这个包储存简单数据 UserDefault In iOS
   shared_preferences: ^0.5.2
-  #浏览器打开
+  share: ^0.6.1+1
   url_launcher: ^5.0.2
 
 

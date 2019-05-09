@@ -189,7 +189,6 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _controller.dispose();
   }
@@ -292,7 +291,6 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 //    print("inintState");
     animation = new Tween(begin: 0.2, end: 1.0).animate(controller)
@@ -309,7 +307,6 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
 //    print("BlockStateBuilding");
-    // TODO: implement build
 //    print(newsTitle);
     return Opacity(
         opacity: animation.value,
@@ -364,7 +361,6 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     controller.dispose();
     super.dispose();
   }
@@ -475,7 +471,6 @@ class _BlocksTapRouteState extends State<BlocksTapRoute> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return new Scaffold(
       body: Center(
         child: Text(id.toString()),

@@ -2,6 +2,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter/material.dart';
 
 class Constants{
+
+  static const techKeywordsList = [];//todo:把我们提供的所有关键词放在这里用做静态数据
+  static const notechKeywordsList = [];
   static const maxline = 4;
   static const themeColor = Color(0xFF3C4F65);
   static const mainScreenBackgroundColor = Color(0xFFCCCBCB);

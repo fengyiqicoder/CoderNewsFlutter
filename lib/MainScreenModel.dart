@@ -14,7 +14,23 @@ class MainModel{
   List<String> currentCategoryArray = ["python", "swift"];
   List<int> currentQueueHeadArray = [1,1];//储存这个值
 
+  //关键词选择有关代码
+
+  List<String> userChosenKeywordsList = [];
+
+  void changeUserChosenKeywordsList(newList){
+    userChosenKeywordsList = newList;
+    //本地化代码
+    saveArrays();
+  }
+
+  List<String> getUserChosenKeywordList(){
+    return userChosenKeywordsList;
+  }
+
+  //保存数据有关代码
   //获取每次登陆时间，进行判定是否需要更新queueHead
+  //
 
   //储存分类数组和表头数组到本地
   void saveArrays() async {
@@ -43,10 +59,16 @@ class MainModel{
     print(currentQueueHeadArray);
   }
 
-  //保存近5个页面数据备用 使用元组（第三方）
+  //页面返回有关逻辑
+  //
+  //
+  // 保存近5个页面数据备用 使用元组（第三方）
+  //
+  //
+
   List<Tuple2<List<StaggeredTile>, List<Blocks>>> _oldScreenDatas = [];
 
-  //保存数据有关代码 为0的时候表示它没有在观看历史记录
+  //为0的时候表示它没有在观看历史记录
   var oldScreenShowingIndex = 0;
 
 //  void printAllOldData(){
@@ -90,7 +112,10 @@ class MainModel{
     return _oldScreenDatas[index];
   }
 
-  //获取tiles
+  //网络数据获取代码
+  //
+  //
+
   List<StaggeredTile> getATileList(heightIs4){
     var tileArray = heightIs4 ? ConstantsForTile.staggeredTiles4by2 : ConstantsForTile.staggeredTiles3by2;
     var constantsLength = tileArray.length;

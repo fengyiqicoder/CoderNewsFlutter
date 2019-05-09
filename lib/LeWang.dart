@@ -45,7 +45,6 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _controller = AnimationController(
@@ -59,7 +58,6 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     print("building Page");
     // fit screen datas
     var WidgetHeight = (ScreenSize.width.toDouble() / 2) * 3;
@@ -163,7 +161,6 @@ class BlocksState extends State<Blocks> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return new GestureDetector(
       child: Stack(
         fit: StackFit.expand,
@@ -294,7 +291,6 @@ class OnTapFloatButtonRouteState extends State<OnTapFloatButtonRoute>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return new Hero(
       tag: "FloatButton",
       child: MenuPage(),

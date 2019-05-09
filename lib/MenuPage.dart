@@ -9,7 +9,6 @@ class FloatButton extends StatefulWidget {
 class FloatButtonState extends State<FloatButton> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Positioned(
       bottom: 13,
       height: 50,
@@ -43,7 +42,6 @@ class MenuPage extends StatefulWidget {
 class MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Hero(
       tag: "Menu",
       child: Scaffold(

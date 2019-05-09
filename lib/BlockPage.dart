@@ -132,9 +132,34 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
           } else if (_deltas.abs() > widthToUpdate && _deltas < 0) {
             //刷新页面
             print("更新数据页面");
+            //先查看是否在浏览历史记录
             _deltas = 0;
-            position = Offset(0.0, 0.0);
-            FreshDatas();
+            if (model.oldScreenShowingIndex > 0){
+              //获取上一页代码
+              var oldData = model.getUpPageData();
+              currentTile = oldData.item1;
+              currentWidgets = oldData.item2;
+            }else {
+              position = Offset(0.0, 0.0);
+              FreshDatas();
+            }
+          } else if (_deltas > 0 && _deltas.abs() < widthToUpdate){
+            var newOpacity = 1 - _deltas / widthToUpdate;
+            print(newOpacity);
+            //根据这个东西展示UI
+            opacity = newOpacity;
+//            position = new Offset(-(1 - opacity) * widthToUpdate, 0.0);
+          } else if (_deltas > 0 && _deltas.abs() > widthToUpdate){
+            //返回之前的页面
+            print("oldData.item2.first.newsTitle");
+            _deltas = 0;
+            var oldData = model.getDownPageData();
+//            print(oldData.item2.first.newsTitle);
+            if (oldData == null) {return;}
+//            model.printAllOldData();
+            currentTile = oldData.item1;
+            currentWidgets = oldData.item2;
+
           }
         });
       },

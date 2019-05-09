@@ -46,14 +46,22 @@ class MainModel{
   //保存近5个页面数据备用 使用元组（第三方）
   List<Tuple2<List<StaggeredTile>, List<Blocks>>> _oldScreenDatas = [];
 
-  //保存数据有关代码
+  //保存数据有关代码 为0的时候表示它没有在观看历史记录
   var oldScreenShowingIndex = 0;
+
+//  void printAllOldData(){
+//    print("Print All News Data");
+//    for (var data in _oldScreenDatas){
+//      print(data.item2.first.newsTitle);
+//    }
+//  }
 
   void saveScreenData(tilesArray,blocksArray){
     if (_oldScreenDatas.length == 5){
-      _oldScreenDatas.removeAt(0);
+      _oldScreenDatas.removeLast();
     }
-    _oldScreenDatas.add(Tuple2(tilesArray, blocksArray));
+    _oldScreenDatas.insert(0, Tuple2(tilesArray, blocksArray));
+
     print("savedScreenOldData");
     print(_oldScreenDatas.length);
   }
@@ -61,7 +69,10 @@ class MainModel{
   //获取上一页或者下一页的代码
   Tuple2<List<StaggeredTile>, List<Blocks>> getUpPageData(){
     if (this.oldScreenShowingIndex > 0) {
+//      print("Getting Up page Datas");
       this.oldScreenShowingIndex -= 1;
+//      print(oldScreenShowingIndex);
+//      model.printAllOldData();
       return getOldScreenData(oldScreenShowingIndex);
     }
   }
@@ -69,12 +80,14 @@ class MainModel{
   Tuple2<List<StaggeredTile>, List<Blocks>> getDownPageData(){
     if (this.oldScreenShowingIndex < 4) {
       this.oldScreenShowingIndex += 1;
+//      print("currentIndex Of oldData");
+//      print(this.oldScreenShowingIndex);
       return getOldScreenData(oldScreenShowingIndex);
     }
   }
 
   Tuple2<List<StaggeredTile>, List<Blocks>> getOldScreenData(index){//index只能在1~5
-    return _oldScreenDatas[5-index];
+    return _oldScreenDatas[index];
   }
 
   //获取tiles

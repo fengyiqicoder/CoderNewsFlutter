@@ -8,6 +8,7 @@ import 'Constants.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'MenuPage.dart';
+import 'LeftDrawer.dart';
 
 
 //数据控制
@@ -82,12 +83,13 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
     print(position);
     if (currentWidgets.length == 0) {
       print("返回空Views");
-      return Scaffold(); //return emtry views
+      return Scaffold(); //return empty views
     }
     return GestureDetector(
       child: Stack(
         children: <Widget>[
           Scaffold(
+            drawer: LeftDrawer(),
             body: DecoratedBox(
               child: Opacity(
                 opacity: opacity,
@@ -287,6 +289,9 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
 
   // WebViewController
   Completer<WebViewController> _controller;
+
+  bool isFavorite = false;
+  Color bgColor;
   //lifeCycle
 
   @override
@@ -301,6 +306,8 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
     //启动动画(正向执行)
     controller.forward();
     _controller = Completer<WebViewController>();
+    bgColor = bgPic == "" ? color : Constants.themeColor;
+
 
   }
 
@@ -332,19 +339,12 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
                 appBar: AppBar(
                     title: Text(newsTitle),
                     backgroundColor: bgPic == "" ? color : Constants.themeColor,
-                    leading: NavigationControls(_controller.future),
+                    leading: NavigationControls(_controller.future, url),
                     actions: <Widget>[
                       Menu(_controller.future, url)
                     ],
                 ),
-                floatingActionButton: FloatingActionButton(
-                    backgroundColor: bgPic == "" ? color : Constants.themeColor,
-                    child: IconButton(
-                        icon: Icon(Icons.favorite_border),
-                        onPressed: null
-                    ),
-                    onPressed: null,
-                ),
+                floatingActionButton: FavoriteButton(isFavorite, bgColor),
                 body: new WebView(
                   initialUrl: url,
                   onWebViewCreated: (WebViewController webViewController) {
@@ -481,10 +481,12 @@ class _BlocksTapRouteState extends State<BlocksTapRoute> {
 
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture)
-      : assert(_webViewControllerFuture != null);
+  const NavigationControls(this._webViewControllerFuture, this.url)
+      : assert(_webViewControllerFuture != null),
+        assert(url != null);
 
   final Future<WebViewController> _webViewControllerFuture;
+  final String url;
 
 
   @override
@@ -499,7 +501,7 @@ class NavigationControls extends StatelessWidget {
         return Row(
           children: <Widget>[
             IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
+              icon: Icon(Icons.arrow_back_ios),
               onPressed: !webViewReady ? null : () => navigate(context, controller, goBack: true),
             ),
           ],
@@ -515,7 +517,7 @@ class NavigationControls extends StatelessWidget {
     var url = await controller.currentUrl();
     print(url);
     if (canNavigate) {
-      goBack ? controller.goBack() : controller.goForward();
+      controller.goBack();
     } else {
         Navigator.pop(context);
     }
@@ -523,7 +525,9 @@ class NavigationControls extends StatelessWidget {
 }
 
 class Menu extends StatelessWidget {
-  Menu(this._webViewControllerFuture, this.url);
+  Menu(this._webViewControllerFuture, this.url)
+      :assert(_webViewControllerFuture != null),
+        assert(url != null);
   final Future<WebViewController> _webViewControllerFuture;
   final String url;
 
@@ -536,27 +540,70 @@ class Menu extends StatelessWidget {
           return PopupMenuButton<String>(
               itemBuilder: (BuildContext context) => <PopupMenuItem<String>> [
                 const PopupMenuItem(
-                    value: "分享",
+                    value: "share",
                     child: Text("分享"),
                 ),
                 const PopupMenuItem(
-                    value: "在浏览器中打开",
+                    value: "openInBrowser",
                     child: Text("在浏览器中打开"),
                 )
               ],
             onSelected: (String value) async {
                 var currentUrl = await controller.data.currentUrl();
-                if(value == "分享") {
+                if(value == "share") {
                   print(currentUrl);
                   Share.share(currentUrl);
                 }
-                if(value == "在浏览器中打开") {
+                if(value == "openInBrowser") {
                   print(currentUrl);
                   launch(currentUrl);
                 }
             },
           );
         },
+    );
+  }
+
+}
+
+class FavoriteButton extends StatefulWidget {
+  FavoriteButton(this.isFavorite, this.color)
+      :assert(isFavorite != null),
+        assert(color != null);
+
+  bool isFavorite;
+  Color color;
+
+  @override
+  _FavoriteWidgetState createState() => new _FavoriteWidgetState(this.isFavorite, this.color);
+
+}
+
+class _FavoriteWidgetState extends State<FavoriteButton> {
+  _FavoriteWidgetState(this.isFavorite, this.color)
+      :assert(isFavorite != null),
+        assert(color != null);
+
+  bool isFavorite;
+  Color color;
+
+  void setFavorite() {
+    setState(() {
+      if(isFavorite == false) {
+        isFavorite = true;
+      }
+      else {
+        isFavorite = false;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new FloatingActionButton(
+      child: isFavorite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+      onPressed: setFavorite,
+      backgroundColor: color,
     );
   }
 

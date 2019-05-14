@@ -347,8 +347,11 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
                 floatingActionButton: FavoriteButton(isFavorite, bgColor),
                 body: new WebView(
                   initialUrl: url,
+                  javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (WebViewController webViewController) {
-                    _controller.complete(webViewController);
+                    if(! _controller.isCompleted) {
+                      _controller.complete(webViewController);
+                    }
                   },
                 ),
               );
@@ -502,7 +505,7 @@ class NavigationControls extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.arrow_back_ios),
-              onPressed: !webViewReady ? null : () => navigate(context, controller, goBack: true),
+              onPressed: !webViewReady ? null : () {navigate(context, controller, goBack: true);},
             ),
           ],
         );

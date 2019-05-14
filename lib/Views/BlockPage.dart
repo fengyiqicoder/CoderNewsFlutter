@@ -3,13 +3,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
-import 'MainScreenModel.dart';
-import 'Constants.dart';
+import 'package:helloflutter/models/MainScreenModel.dart';
+import '../models/Constants.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'MenuPage.dart';
 import 'LeftDrawer.dart';
-
+import 'webviewPage.dart';
 
 //数据控制
 var model = MainModel();
@@ -347,8 +347,11 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
                 floatingActionButton: FavoriteButton(isFavorite, bgColor),
                 body: new WebView(
                   initialUrl: url,
+                  javascriptMode: JavascriptMode.unrestricted,
                   onWebViewCreated: (WebViewController webViewController) {
-                    _controller.complete(webViewController);
+                    if(! _controller.isCompleted) {
+                      _controller.complete(webViewController);
+                    }
                   },
                 ),
               );
@@ -454,7 +457,7 @@ List<Widget> BlockKeyWords(List<String> keywordArray) {
   }
   return keyWordList;
 }
-
+//详细页面代码
 class BlocksTapRoute extends StatefulWidget {
   BlocksTapRoute(this.id);
 
@@ -479,132 +482,3 @@ class _BlocksTapRouteState extends State<BlocksTapRoute> {
   }
 }
 
-
-class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture, this.url)
-      : assert(_webViewControllerFuture != null),
-        assert(url != null);
-
-  final Future<WebViewController> _webViewControllerFuture;
-  final String url;
-
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<WebViewController>(
-      future: _webViewControllerFuture,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-        final bool webViewReady =
-            snapshot.connectionState == ConnectionState.done;
-        final WebViewController controller = snapshot.data;
-        return Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: !webViewReady ? null : () => navigate(context, controller, goBack: true),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  navigate(BuildContext context, WebViewController controller,
-      {bool goBack: false}) async {
-    bool canNavigate =
-    goBack ? await controller.canGoBack() : await controller.canGoForward();
-    var url = await controller.currentUrl();
-    print(url);
-    if (canNavigate) {
-      controller.goBack();
-    } else {
-        Navigator.pop(context);
-    }
-  }
-}
-
-class Menu extends StatelessWidget {
-  Menu(this._webViewControllerFuture, this.url)
-      :assert(_webViewControllerFuture != null),
-        assert(url != null);
-  final Future<WebViewController> _webViewControllerFuture;
-  final String url;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _webViewControllerFuture,
-        builder: (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-          if(!controller.hasData) return new Container();
-          return PopupMenuButton<String>(
-              itemBuilder: (BuildContext context) => <PopupMenuItem<String>> [
-                const PopupMenuItem(
-                    value: "share",
-                    child: Text("分享"),
-                ),
-                const PopupMenuItem(
-                    value: "openInBrowser",
-                    child: Text("在浏览器中打开"),
-                )
-              ],
-            onSelected: (String value) async {
-                var currentUrl = await controller.data.currentUrl();
-                if(value == "share") {
-                  print(currentUrl);
-                  Share.share(currentUrl);
-                }
-                if(value == "openInBrowser") {
-                  print(currentUrl);
-                  launch(currentUrl);
-                }
-            },
-          );
-        },
-    );
-  }
-
-}
-
-class FavoriteButton extends StatefulWidget {
-  FavoriteButton(this.isFavorite, this.color)
-      :assert(isFavorite != null),
-        assert(color != null);
-
-  bool isFavorite;
-  Color color;
-
-  @override
-  _FavoriteWidgetState createState() => new _FavoriteWidgetState(this.isFavorite, this.color);
-
-}
-
-class _FavoriteWidgetState extends State<FavoriteButton> {
-  _FavoriteWidgetState(this.isFavorite, this.color)
-      :assert(isFavorite != null),
-        assert(color != null);
-
-  bool isFavorite;
-  Color color;
-
-  void setFavorite() {
-    setState(() {
-      if(isFavorite == false) {
-        isFavorite = true;
-      }
-      else {
-        isFavorite = false;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new FloatingActionButton(
-      child: isFavorite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
-      onPressed: setFavorite,
-      backgroundColor: color,
-    );
-  }
-
-}

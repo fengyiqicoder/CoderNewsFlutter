@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:ui';
-import 'MenuPage.dart';
-import 'LeftDrawer.dart';
+import 'package:helloflutter/Views/MenuPage.dart';
+import 'package:helloflutter/Views/LeftDrawer.dart';
 
 
 const BlockTitleTextStyle = TextStyle(

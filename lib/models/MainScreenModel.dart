@@ -11,8 +11,8 @@ class MainModel{
   //获取数据颜色
   var currentTilesIndex = 0;
   var currentTilesColorIndex = 0;
-  List<String> currentCategoryArray = ["python", "swift"];
-  List<int> currentQueueHeadArray = [1,1];//储存这个值
+  List<String> currentCategoryArray = ["python", "swift", "java"];
+  List<int> currentQueueHeadArray = [1, 1, 1];//储存这个值
 
   //关键词选择有关代码
 

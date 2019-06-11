@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 //import 'LeWang.dart';
-import 'package:helloflutter/Views/BlockPage.dart';
-//import 'newDesignFile.dart';
+import 'BlockPage.dart';
 import 'Network.dart';
 
 void main() {

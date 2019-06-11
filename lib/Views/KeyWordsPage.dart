@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
+import '../models/KeyWordsModel.dart';
+
+
 
 class KeyWordsPage extends StatefulWidget {
   @override
@@ -6,44 +10,202 @@ class KeyWordsPage extends StatefulWidget {
 }
 
 class KeyWordsPageState extends State<KeyWordsPage> {
+
+//  bool pageDoneState = false;
+  BuildContext copyContext;
+
+  checkAlertDialog(){
+    return AlertDialog(
+      title: Text('保存', style: TextStyle(color: Colors.blue),),
+      content: Text('确定保存?'),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+            '取消',
+            style: TextStyle(color: Colors.red,),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        FlatButton(
+          child: Text(
+            '确认',
+            style: TextStyle(color: Colors.blue,),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+            print(chooseResult);
+            testChoosedList.clear();
+            int n = chooseResult.length;
+            for(int i = 0; i < n; i++){
+              testChoosedList.add(chooseResult[i]);
+            }
+            chooseResult.clear();
+            Navigator.of(copyContext).pop();
+          },
+        ),
+      ],
+    );
+  }
+
+  cancleAlertDialog(){
+    return AlertDialog(
+      title: Text('取消', style: TextStyle(color: Colors.red),),
+      content: Text('取消保存?'),
+      actions: <Widget>[
+        FlatButton(
+          child: Text(
+            '取消',
+            style: TextStyle(color: Colors.red,),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        FlatButton(
+          child: Text(
+            '确认',
+            style: TextStyle(color: Colors.blue,),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+            print(testChoosedList);
+            chooseResult.clear();
+            Navigator.of(copyContext).pop();
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    int n = testChoosedList.length;
+    for(int i = 0; i < n; i++){
+      chooseResult.add(testChoosedList[i]);
+    }
+    print(chooseResult);
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+
+    copyContext = this.context;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Choose the key that you like",
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        ),
-        automaticallyImplyLeading: false,
+//        automaticallyImplyLeading: false,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
         leading: IconButton(
           icon: Icon(Icons.close),
           color: Colors.red,
-          onPressed: () {},
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => cancleAlertDialog(),
+            );
+          },
         ),
         actions: <Widget>[IconButton(
           icon: Icon(Icons.done),
           color: Colors.blue,
-          onPressed: () {},
-        ),],
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => checkAlertDialog(),
+            );
+          },
+        )],
       ),
-      body: CustomScrollView(
-        shrinkWrap: true,
-        slivers: <Widget>[
-          SliverPadding(
-            padding: EdgeInsets.all(4.0),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                createKeyLableList(testKeyWords1, testChoosedList),
-              ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            TitleText("添加标签",40,Colors.black),
+            TitleText("添加你感兴趣的标签", 15, Colors.grey),
+            Spacing(5),
+            CutLine(),
+            TitleText("语言种类", 25, Colors.red),
+            Wrap(
+              runAlignment: WrapAlignment.start,
+              alignment: WrapAlignment.spaceEvenly,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              children:createKeyLableList(testKeyWords1, testChoosedList),
             ),
-          ),
-        ],
+            Spacing(5),
+            CutLine(),
+            TitleText("科技相关", 25, Colors.blue),
+            Wrap(
+              runAlignment: WrapAlignment.start,
+              alignment: WrapAlignment.spaceEvenly,
+              crossAxisAlignment: WrapCrossAlignment.start,
+              children:createKeyLableList(testKeyWords2, testChoosedList),
+            ),
+            Spacing(5),
+            CutLine(),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class CutLine extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      height: 1,
+      width: window.physicalSize.width.toDouble() / window.devicePixelRatio,
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(14, 14, 14, 0.1),
+      ),
+    );
+  }
+}
+
+class Spacing extends StatelessWidget{
+  Spacing(this.size);
+  double size;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      height: size,
+    );
+  }
+}
+
+class TitleText extends StatelessWidget{
+  TitleText(this.titleText,this.fontSize,this.colors);
+
+  String titleText;
+  double fontSize;
+  Color colors;
+  
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(
+      child: Text(
+        titleText,
+        style: TextStyle(
+          fontSize: fontSize,
+          color: colors,
+        ),
+        textAlign: TextAlign.justify,
+      ),
+      padding: EdgeInsets.only(left: 10),
     );
   }
 }
@@ -78,81 +240,18 @@ class KeyLableState extends State<KeyLable>{
       ),
       color: isChoosed ? Colors.pinkAccent : Colors.grey,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(5),
       ),
       onPressed: (){
         this.setState((){
           isChoosed = !isChoosed;
         });
+
+        if(isChoosed == true) chooseResult.add(this.keyWord);
+        else chooseResult.remove(this.keyWord);
       },
     );
   }
 }
 
-List<Widget> createKeyLableList(List<String> keyList, List<String> chooseList){
-  int n = keyList.length;
 
-  List<bool> islableChoosed = isLableChoosed(keyList, chooseList);
-  List<Widget> result = [];
-
-  for(int i = 0; i < n; i++){
-    result.add(KeyLable(keyList[i], islableChoosed[i]));
-  }
-
-  return result;
-}
-
-List<bool> isLableChoosed(List<String> keyList, List<String> chooseList){
-  int n = keyList.length;
-  int m = chooseList.length;
-
-  List<bool> result = [];
-
-  for(int i = 0; i < n; i++){
-    result.add(false);
-  }
-
-  for(int i = 0; i < n; i++){
-    for(int j = 0; j < m; j++){
-      if(keyList[i] == chooseList[j]){
-        result[i] = true;
-      }
-    }
-  }
-
-  return result;
-}
-
-List<String> testKeyWords1 = [
-  "Java",
-  "Python",
-  "C++",
-  "Flutter",
-  "Dart",
-  "C#",
-  "UE4",
-  "Unity",
-  "Go",
-  "SQL",
-];
-
-List<String> testKeyWords2 = [
-  "iPhone",
-  "Sumsung",
-  "Non Terrae Plus Ultra",
-  "Chicken you're beautiful",
-  "How to play basketball",
-  "Ur moves like cxk",
-  "Pass ball cxk",
-  "Jackpot"
-];
-
-List<String> testChoosedList = [
-  "C++",
-  "Flutter",
-  "Dart",
-  "C#",
-  "UE4",
-  "Unity",
-  "Go",
-];

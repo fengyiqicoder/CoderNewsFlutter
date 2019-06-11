@@ -47,13 +47,13 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     //在这里获取网络数据
-    getDatasForView();
+//    getDatasForView();
     //获取本地数据代码 暂时不使用
-//    model.getArray().then((nothing){//获取本地数据之后才能获取网络数据
-//      print("创建State只有一次");
-//      //在这里获取网络数据
-//      getDatasForView();
-//    });
+    model.getArray().then((nothing){//获取本地数据之后才能获取网络数据
+      print("创建State只有一次");
+      //在这里获取网络数据
+      getDatasForView();
+    });
     print("initState");
     //animations
     _controller = AnimationController(
@@ -89,7 +89,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       child: Stack(
         children: <Widget>[
           Scaffold(
-            drawer: LeftDrawer(),
+            drawer: LeftDrawer(model),
             body: DecoratedBox(
               child: Opacity(
                 opacity: opacity,
@@ -339,7 +339,7 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
                 appBar: AppBar(
                     title: Text(newsTitle),
                     backgroundColor: bgPic == "" ? color : Constants.themeColor,
-                    leading: NavigationControls(_controller.future, url),
+                    leading: NavigationControls(_controller.future,url,model),
                     actions: <Widget>[
                       Menu(_controller.future, url)
                     ],

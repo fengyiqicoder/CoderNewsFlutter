@@ -18,6 +18,10 @@ class Constants{
   color: Colors.white70,
   fontWeight: FontWeight.w500
   );
+
+  //各种分类
+static const lankeywords = ["android","swift","networkSecurity","python"];
+static const techKeywords = ["computer","phone","resource","course","techArticles"];
 }
 
 class ConstantsForTile {

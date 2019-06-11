@@ -4,14 +4,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import '../models/MainScreenModel.dart';
+MainModel mainModel;
+String theUrl;
 class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture, this.url)
-      : assert(_webViewControllerFuture != null),
-        assert(url != null);
-
+  NavigationControls(this._webViewControllerFuture, this.url ,model){
+    mainModel = model;
+    theUrl = url;
+  }
   final Future<WebViewController> _webViewControllerFuture;
   final String url;
+
 
 
   @override
@@ -116,9 +119,15 @@ class _FavoriteWidgetState extends State<FavoriteButton> {
     setState(() {
       if(isFavorite == false) {
         isFavorite = true;
+        //添加到model里
+        mainModel.likedArray.add(theUrl);
+        mainModel.saveArrays();
       }
       else {
         isFavorite = false;
+        //删除model里
+        mainModel.likedArray.removeLast();
+        mainModel.saveArrays();
       }
     });
   }

@@ -5,16 +5,21 @@ import 'dart:ui';
 import 'package:helloflutter/Views/KeyWordsPage.dart';
 
 const double _kWidth = 200;
-class LeftDrawer extends StatelessWidget {
 
-  const LeftDrawer({
+class LeftDrawer extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() =>LeftDrawerState();
+}
+
+class LeftDrawerState extends State<LeftDrawer> {
+
+  LeftDrawerState({
     Key key,
     this.elevation = 16.0,
     this.child,
     this.semanticLabel,
     this.color = Colors.transparent,
-  }) : assert(elevation != null && elevation >= 0.0),
-        super(key: key);
+  });
 
 
   final double elevation;
@@ -57,7 +62,7 @@ class LeftDrawer extends StatelessWidget {
 
                     child: ListView(
                       itemExtent: 40,
-                      children: createDrawerKeyLable(testDrawerList),
+                      children: createDrawerKeyLable(drawerList),
                     ),
                 ),
                 Expanded(
@@ -78,7 +83,7 @@ class LeftDrawer extends StatelessWidget {
                             textColor: Colors.white,
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                                return KeyWordsPage();
+                                return KeyWordsPage(this);
                               }));
                             },
                           ),
@@ -124,21 +129,5 @@ List<Widget> createDrawerKeyLable(List<String> drawerKeyList){
   return result;
 }
 
-List<String> testDrawerList = [
-  "C++",
-  "Flutter",
-  "Dart",
-  "C#",
-  "UE4",
-  "Unity",
-  "Go",
-  "iPhone",
-  "Sumsung",
-  "Non Terrae Plus Ultra",
-  "Chicken you're beautiful",
-  "How to play basketball",
-  "Ur moves like cxk",
-  "Pass ball cxk",
-  "Jackpot",
-];
+List<String> drawerList = [];
 

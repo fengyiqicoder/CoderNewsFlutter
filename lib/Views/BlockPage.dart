@@ -3,13 +3,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
-import 'package:helloflutter/models//MainScreenModel.dart';
-import 'package:helloflutter/models/Constants.dart';
+import 'package:helloflutter/models/MainScreenModel.dart';
+import '../models/Constants.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'MenuPage.dart';
 import 'LeftDrawer.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'webviewPage.dart';
 
 //数据控制
 var model = MainModel();
@@ -47,13 +47,13 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     //在这里获取网络数据
-    getDatasForView();
+//    getDatasForView();
     //获取本地数据代码 暂时不使用
-//    model.getArray().then((nothing){//获取本地数据之后才能获取网络数据
-//      print("创建State只有一次");
-//      //在这里获取网络数据
-//      getDatasForView();
-//    });
+    model.getArray().then((nothing){//获取本地数据之后才能获取网络数据
+      print("创建State只有一次");
+      //在这里获取网络数据
+      getDatasForView();
+    });
     print("initState");
     //animations
     _controller = AnimationController(
@@ -89,7 +89,7 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
       child: Stack(
         children: <Widget>[
           Scaffold(
-            drawer: LeftDrawer(),
+            drawer: LeftDrawer(model),
             body: DecoratedBox(
               child: Opacity(
                 opacity: opacity,
@@ -136,33 +136,32 @@ class BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
             print("更新数据页面");
             //先查看是否在浏览历史记录
             _deltas = 0;
-            if (model.oldScreenShowingIndex > 0) {
+            if (model.oldScreenShowingIndex > 0){
               //获取上一页代码
               var oldData = model.getUpPageData();
               currentTile = oldData.item1;
               currentWidgets = oldData.item2;
-            } else {
+            }else {
               position = Offset(0.0, 0.0);
               FreshDatas();
             }
-          } else if (_deltas > 0 && _deltas.abs() < widthToUpdate) {
+          } else if (_deltas > 0 && _deltas.abs() < widthToUpdate){
             var newOpacity = 1 - _deltas / widthToUpdate;
             print(newOpacity);
             //根据这个东西展示UI
             opacity = newOpacity;
 //            position = new Offset(-(1 - opacity) * widthToUpdate, 0.0);
-          } else if (_deltas > 0 && _deltas.abs() > widthToUpdate) {
+          } else if (_deltas > 0 && _deltas.abs() > widthToUpdate){
             //返回之前的页面
             print("oldData.item2.first.newsTitle");
             _deltas = 0;
             var oldData = model.getDownPageData();
 //            print(oldData.item2.first.newsTitle);
-            if (oldData == null) {
-              return;
-            }
+            if (oldData == null) {return;}
 //            model.printAllOldData();
             currentTile = oldData.item1;
             currentWidgets = oldData.item2;
+
           }
         });
       },
@@ -282,7 +281,7 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   var textMaxLine;
   var color;
   List<String> tagsArray = [];
-  List<String> urlsArray = [];
+  List<String> urlsArray= [];
 
   //Animation
   Animation<double> animation;
@@ -292,9 +291,7 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
   Completer<WebViewController> _controller;
 
   bool isFavorite = false;
-  bool isLoading = false;
   Color bgColor;
-
   //lifeCycle
 
   @override
@@ -310,6 +307,8 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
     controller.forward();
     _controller = Completer<WebViewController>();
     bgColor = bgPic == "" ? color : Constants.themeColor;
+
+
   }
 
   @override
@@ -337,43 +336,31 @@ class BlocksState extends State<Blocks> with SingleTickerProviderStateMixin {
             print("url to show $url");
             Navigator.push(context, new MaterialPageRoute(builder: (context) {
               return new Scaffold(
-                  appBar: AppBar(
+                appBar: AppBar(
                     title: Text(newsTitle),
                     backgroundColor: bgPic == "" ? color : Constants.themeColor,
-                    leading: NavigationControls(_controller.future, url),
-                    actions: <Widget>[Menu(_controller.future, url)],
-                  ),
-                  floatingActionButton: FavoriteButton(isFavorite, bgColor),
-                  body: Stack(
-                    children: <Widget>[
-                      WebView(
-                        initialUrl: url,
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          if (!_controller.isCompleted) {
-                            _controller.complete(webViewController);
-                          }
-                        },
-                      ),
-//                      LoadingIndicator(isLoading, _controller.future),
+                    leading: NavigationControls(_controller.future,url,model),
+                    actions: <Widget>[
+                      Menu(_controller.future, url)
                     ],
-                  )
-
-//                body: new WebView(
-//                  initialUrl: url,
-//                  javascriptMode: JavascriptMode.unrestricted,
-//                  onWebViewCreated: (WebViewController webViewController) {
-//                    if(! _controller.isCompleted) {
-//                      _controller.complete(webViewController);
-//                    }
-//                  },
-//                ),
-                  );
+                ),
+                floatingActionButton: FavoriteButton(isFavorite, bgColor),
+                body: new WebView(
+                  initialUrl: url,
+                  javascriptMode: JavascriptMode.unrestricted,
+                  onWebViewCreated: (WebViewController webViewController) {
+                    if(! _controller.isCompleted) {
+                      _controller.complete(webViewController);
+                    }
+                  },
+                ),
+              );
             }));
           },
         ));
   }
+
+
 
   @override
   void dispose() {
@@ -470,7 +457,7 @@ List<Widget> BlockKeyWords(List<String> keywordArray) {
   }
   return keyWordList;
 }
-
+//详细页面代码
 class BlocksTapRoute extends StatefulWidget {
   BlocksTapRoute(this.id);
 
@@ -495,168 +482,3 @@ class _BlocksTapRouteState extends State<BlocksTapRoute> {
   }
 }
 
-class NavigationControls extends StatelessWidget {
-  const NavigationControls(this._webViewControllerFuture, this.url)
-      : assert(_webViewControllerFuture != null),
-        assert(url != null);
-
-  final Future<WebViewController> _webViewControllerFuture;
-  final String url;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<WebViewController>(
-      future: _webViewControllerFuture,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-        final bool webViewReady =
-            snapshot.connectionState == ConnectionState.done;
-        final WebViewController controller = snapshot.data;
-        return Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: !webViewReady
-                  ? null
-                  : () {
-                      navigate(context, controller, goBack: true);
-                    },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  navigate(BuildContext context, WebViewController controller,
-      {bool goBack: false}) async {
-    bool canNavigate =
-        goBack ? await controller.canGoBack() : await controller.canGoForward();
-    var url = await controller.currentUrl();
-    print(url);
-    if (canNavigate) {
-      controller.goBack();
-    } else {
-      Navigator.pop(context);
-    }
-  }
-}
-
-class Menu extends StatelessWidget {
-  Menu(this._webViewControllerFuture, this.url)
-      : assert(_webViewControllerFuture != null),
-        assert(url != null);
-  final Future<WebViewController> _webViewControllerFuture;
-  final String url;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _webViewControllerFuture,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-        if (!controller.hasData) return new Container();
-        return PopupMenuButton<String>(
-          itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-                const PopupMenuItem(
-                  value: "share",
-                  child: Text("分享"),
-                ),
-                const PopupMenuItem(
-                  value: "openInBrowser",
-                  child: Text("在浏览器中打开"),
-                )
-              ],
-          onSelected: (String value) async {
-            var currentUrl = await controller.data.currentUrl();
-            if (value == "share") {
-              print(url);
-              Share.share(url);
-            }
-            if (value == "openInBrowser") {
-              print(url);
-              launch(url);
-            }
-          },
-        );
-      },
-    );
-  }
-}
-
-class FavoriteButton extends StatefulWidget {
-  FavoriteButton(this.isFavorite, this.color)
-      : assert(isFavorite != null),
-        assert(color != null);
-
-  bool isFavorite;
-  Color color;
-
-  @override
-  _FavoriteWidgetState createState() =>
-      new _FavoriteWidgetState(this.isFavorite, this.color);
-}
-
-class _FavoriteWidgetState extends State<FavoriteButton> {
-  _FavoriteWidgetState(this.isFavorite, this.color)
-      : assert(isFavorite != null),
-        assert(color != null);
-
-  bool isFavorite;
-  Color color;
-
-  void setFavorite() {
-    setState(() {
-      if (isFavorite == false) {
-        isFavorite = true;
-      } else {
-        isFavorite = false;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new FloatingActionButton(
-      child: isFavorite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
-      onPressed: setFavorite,
-      backgroundColor: color,
-    );
-  }
-}
-
-class LoadingIndicator extends StatefulWidget {
-  LoadingIndicator(this.isLoading, this.controller)
-      : assert(isLoading != null),
-        assert(controller != null);
-
-  bool isLoading;
-  Future<WebViewController> controller;
-
-  @override
-  _LoadingIndicatorState createState() =>
-      new _LoadingIndicatorState(this.isLoading, this.controller);
-}
-
-class _LoadingIndicatorState extends State<LoadingIndicator> {
-  _LoadingIndicatorState(this.isLoading, this.controller)
-      : assert(isLoading != null),
-        assert(controller != null);
-
-  bool isLoading;
-  Future<WebViewController> controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: controller,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> snapshot) {
-        bool webViewDone = snapshot.connectionState == ConnectionState.done;
-        return Center(
-          child: SpinKitFadingCube(color: Colors.grey,)
-        );
-      },
-    );
-  }
-}

@@ -39,7 +39,7 @@ List<bool> isLableChoosed(List<String> keyList, List<String> chooseList){
   return result;
 }
 
-List<String> choosedList = [];
+
 
 List<String> lanKeyWords = [
   "Java",

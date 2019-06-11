@@ -2,7 +2,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:helloflutter/models/Network.dart';
 import 'package:flutter/material.dart';
 import 'Constants.dart';
-import 'package:helloflutter/Views/BlockPage.dart';
+import '../Views/BlockPage.dart';
 import 'package:tuple/tuple.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,9 +11,9 @@ class MainModel{
   //获取数据颜色
   var currentTilesIndex = 0;
   var currentTilesColorIndex = 0;
-  List<String> currentCategoryArray = ["python", "swift", "java"];
-  List<int> currentQueueHeadArray = [1, 1, 1];//储存这个值
-
+  List<String> currentCategoryArray = ["python", "swift"];
+  List<int> currentQueueHeadArray = [1,1];//储存这个值
+  List<String> likedArray = [];
   //关键词选择有关代码
 
   List<String> userChosenKeywordsList = [];
@@ -34,37 +34,54 @@ class MainModel{
 
   //储存分类数组和表头数组到本地
   void saveArrays() async {
-    return;//暂时不进行储存
+//    return;//暂时不进行储存
     SharedPreferences defualts = await SharedPreferences.getInstance();
     defualts.setStringList("currentCategoryArray", currentCategoryArray);
+    defualts.setStringList("likedArray", likedArray);
     for (var index = 0;index<currentCategoryArray.length;index++){
       var key = "currentQueueHeadArray" + index.toString();
       var value = currentQueueHeadArray[index];
       defualts.setInt(key, value);
     }
+    print("喜爱的数据数组");
+    print(likedArray);
   }
   //获取分类数组和表头数组
   Future<Null> getArray() async{
     SharedPreferences defualts = await SharedPreferences.getInstance();
     List<int> array = [];
-    currentCategoryArray = defualts.getStringList("currentCategoryArray") ?? [];
+    currentCategoryArray = defualts.getStringList("currentCategoryArray") ?? ["python", "swift"];//如果没有应该让用户进行选择
+    likedArray = defualts.getStringList("likedArray") ?? [];
     for (var index = 0;index<currentCategoryArray.length;index++){
       var key = "currentQueueHeadArray" + index.toString();
-      var item = defualts.getInt(key);
+      var item = defualts.getInt(key) ?? 1 ;
       array.add(item);
     }
     currentQueueHeadArray = array;
     print("获取数据");
     print(currentCategoryArray);
     print(currentQueueHeadArray);
+    print(likedArray);
   }
 
-  //页面返回有关逻辑
-  //
-  //
-  // 保存近5个页面数据备用 使用元组（第三方）
-  //
-  //
+  void updateCategoryArray(newString){
+    for (var str in newString){
+      var doNotHave = true;
+      for (var oldStr in currentCategoryArray){
+        if (oldStr == str){
+          doNotHave = false;
+          break;
+        }
+      }
+      if (doNotHave == true){
+        currentCategoryArray.add(str);
+        currentQueueHeadArray.add(1);
+      }
+    }
+    saveArrays();
+  }
+
+
 
   List<Tuple2<List<StaggeredTile>, List<Blocks>>> _oldScreenDatas = [];
 

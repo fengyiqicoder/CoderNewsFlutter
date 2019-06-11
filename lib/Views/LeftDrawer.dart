@@ -3,10 +3,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:helloflutter/Views/KeyWordsPage.dart';
+import '../models/MainScreenModel.dart';
 
 const double _kWidth = 200;
-
+MainModel model;
+List<String> drawerList = [];
 class LeftDrawer extends StatefulWidget{
+  LeftDrawer(themodel){
+    model = themodel;
+    drawerList = model.currentCategoryArray;
+  }
   @override
   State<StatefulWidget> createState() =>LeftDrawerState();
 }
@@ -83,7 +89,7 @@ class LeftDrawerState extends State<LeftDrawer> {
                             textColor: Colors.white,
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                                return KeyWordsPage(this);
+                                return KeyWordsPage(this,drawerList,model);
                               }));
                             },
                           ),
@@ -129,5 +135,5 @@ List<Widget> createDrawerKeyLable(List<String> drawerKeyList){
   return result;
 }
 
-List<String> drawerList = [];
+
 

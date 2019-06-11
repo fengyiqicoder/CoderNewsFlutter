@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../models/KeyWordsModel.dart';
 import 'LeftDrawer.dart';
+import '../models/Constants.dart';
+import '../models/MainScreenModel.dart';
 
-
+List<String> choosedList = [];
+MainModel model ;
 
 class KeyWordsPage extends StatefulWidget {
-  KeyWordsPage(this.prePage);
+  KeyWordsPage(this.prePage,list,theModel){
+    choosedList = list;
+    model = theModel;
+  }
   var prePage;
 
   @override
@@ -78,6 +84,8 @@ class KeyWordsPageState extends State<KeyWordsPage> {
           ),
           onPressed: () {
             Navigator.of(context).pop();
+            //储存到Model
+            model.updateCategoryArray(choosedList);
             print(choosedList);
             chooseResult.clear();
             Navigator.of(copyContext).pop();
@@ -147,7 +155,7 @@ class KeyWordsPageState extends State<KeyWordsPage> {
               runAlignment: WrapAlignment.start,
               alignment: WrapAlignment.spaceEvenly,
               crossAxisAlignment: WrapCrossAlignment.start,
-              children:createKeyLableList(lanKeyWords, choosedList),
+              children:createKeyLableList(Constants.lankeywords, choosedList),
             ),
             Spacing(5),
             CutLine(),
@@ -156,7 +164,7 @@ class KeyWordsPageState extends State<KeyWordsPage> {
               runAlignment: WrapAlignment.start,
               alignment: WrapAlignment.spaceEvenly,
               crossAxisAlignment: WrapCrossAlignment.start,
-              children:createKeyLableList(tecKeyWords, choosedList),
+              children:createKeyLableList(Constants.techKeywords, choosedList),
             ),
             Spacing(5),
             CutLine(),

@@ -2,7 +2,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:helloflutter/models/Network.dart';
 import 'package:flutter/material.dart';
 import 'Constants.dart';
-import '../Views/BlockPage.dart';
+import 'package:helloflutter/Views/BlockPage.dart';
 import 'package:tuple/tuple.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -39,20 +39,9 @@ List<bool> isLableChoosed(List<String> keyList, List<String> chooseList){
   return result;
 }
 
-List<String> testChoosedList = [
-  "C++",
-  "Flutter",
-  "Dart",
-  "C#",
-  "UE4",
-  "Unity",
-  "Go",
-  "Chicken you're beautiful",
-  "How to play basketball",
-  "Ur moves like cxk",
-];
+List<String> choosedList = [];
 
-List<String> testKeyWords1 = [
+List<String> lanKeyWords = [
   "Java",
   "Python",
   "C++",
@@ -65,7 +54,7 @@ List<String> testKeyWords1 = [
   "SQL",
 ];
 
-List<String> testKeyWords2 = [
+List<String> tecKeyWords = [
   "iPhone",
   "Sumsung",
   "Non Terrae Plus Ultra",

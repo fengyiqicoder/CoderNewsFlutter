@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import '../models/KeyWordsModel.dart';
+import 'LeftDrawer.dart';
 
 
 
 class KeyWordsPage extends StatefulWidget {
+  KeyWordsPage(this.prePage);
+  var prePage;
+
   @override
-  State<StatefulWidget> createState() => KeyWordsPageState();
+  State<StatefulWidget> createState() => KeyWordsPageState(prePage);
 }
 
 class KeyWordsPageState extends State<KeyWordsPage> {
+  KeyWordsPageState(this.prePage);
 
 //  bool pageDoneState = false;
   BuildContext copyContext;
+  var prePage;
 
   checkAlertDialog(){
     return AlertDialog(
@@ -36,13 +42,15 @@ class KeyWordsPageState extends State<KeyWordsPage> {
           onPressed: () {
             Navigator.of(context).pop();
             print(chooseResult);
-            testChoosedList.clear();
+            choosedList.clear();
             int n = chooseResult.length;
             for(int i = 0; i < n; i++){
-              testChoosedList.add(chooseResult[i]);
+              choosedList.add(chooseResult[i]);
             }
             chooseResult.clear();
             Navigator.of(copyContext).pop();
+            drawerList = choosedList;
+            prePage.setState((){});
           },
         ),
       ],
@@ -70,7 +78,7 @@ class KeyWordsPageState extends State<KeyWordsPage> {
           ),
           onPressed: () {
             Navigator.of(context).pop();
-            print(testChoosedList);
+            print(choosedList);
             chooseResult.clear();
             Navigator.of(copyContext).pop();
           },
@@ -83,9 +91,9 @@ class KeyWordsPageState extends State<KeyWordsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    int n = testChoosedList.length;
+    int n = choosedList.length;
     for(int i = 0; i < n; i++){
-      chooseResult.add(testChoosedList[i]);
+      chooseResult.add(choosedList[i]);
     }
     print(chooseResult);
   }
@@ -139,7 +147,7 @@ class KeyWordsPageState extends State<KeyWordsPage> {
               runAlignment: WrapAlignment.start,
               alignment: WrapAlignment.spaceEvenly,
               crossAxisAlignment: WrapCrossAlignment.start,
-              children:createKeyLableList(testKeyWords1, testChoosedList),
+              children:createKeyLableList(lanKeyWords, choosedList),
             ),
             Spacing(5),
             CutLine(),
@@ -148,7 +156,7 @@ class KeyWordsPageState extends State<KeyWordsPage> {
               runAlignment: WrapAlignment.start,
               alignment: WrapAlignment.spaceEvenly,
               crossAxisAlignment: WrapCrossAlignment.start,
-              children:createKeyLableList(testKeyWords2, testChoosedList),
+              children:createKeyLableList(tecKeyWords, choosedList),
             ),
             Spacing(5),
             CutLine(),

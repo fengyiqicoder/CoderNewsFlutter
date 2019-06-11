@@ -2,20 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import 'KeyWordsPage.dart';
-import 'package:helloflutter/models/MainScreenModel.dart';
+import 'package:helloflutter/Views/KeyWordsPage.dart';
 
 const double _kWidth = 200;
 
-class LeftDrawer extends StatelessWidget {
-  const LeftDrawer({
+class LeftDrawer extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() =>LeftDrawerState();
+}
+
+class LeftDrawerState extends State<LeftDrawer> {
+
+  LeftDrawerState({
     Key key,
     this.elevation = 16.0,
     this.child,
     this.semanticLabel,
     this.color = Colors.transparent,
-  })  : assert(elevation != null && elevation >= 0.0),
-        super(key: key);
+  });
+
 
   final double elevation;
 
@@ -53,26 +58,12 @@ class LeftDrawer extends StatelessWidget {
               children: <Widget>[
                 Container(
                   color: Colors.white,
-                  height: window.physicalSize.height.toDouble() /
-                          window.devicePixelRatio.toDouble() -
-                      150,
-                  child: ListView(
-                    itemExtent: 40,
-                    children: createDrawerKeyLable(testDrawerList),
-                  ),
-//                  child: CustomScrollView(
-//                    shrinkWrap: true,
-//                    slivers: <Widget>[
-//                      SliverPadding(
-//                        padding: EdgeInsets.all(4.0),
-//                        sliver: SliverList(
-//                          delegate: SliverChildListDelegate(
-//                            createDrawerKeyLable(testDrawerList),
-//                          ),
-//                        ),
-//                      ),
-//                    ],
-//                  ),
+                  height: window.physicalSize.height.toDouble() / window.devicePixelRatio.toDouble() - 150,
+
+                    child: ListView(
+                      itemExtent: 40,
+                      children: createDrawerKeyLable(drawerList),
+                    ),
                 ),
                 Expanded(
                   child: Container(
@@ -91,9 +82,8 @@ class LeftDrawer extends StatelessWidget {
                             color: Colors.pinkAccent,
                             textColor: Colors.white,
                             onPressed: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return KeyWordsPage();
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                                return KeyWordsPage(this);
                               }));
                             },
                           ),
@@ -112,47 +102,32 @@ class LeftDrawer extends StatelessWidget {
   }
 }
 
-List<Widget> createDrawerKeyLable(List<String> drawerKeyList) {
+List<Widget> createDrawerKeyLable(List<String> drawerKeyList){
   int n = drawerKeyList.length;
 
   List<Widget> result = [];
 
-  for (int i = 0; i < n; i++) {
-    result.add(GestureDetector(
-        child: Container(
-      decoration: BoxDecoration(
-        border:
-            Border(bottom: BorderSide(color: Color.fromRGBO(14, 14, 14, 0.1))),
-      ),
-      child: Center(
-        child: Text(
-          drawerKeyList[i],
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 20,
+  for(int i = 0; i < n; i ++){
+    result.add(
+      Container(
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Color.fromRGBO(14, 14, 14, 0.1)))
+        ),
+        child: Center(
+          child: Text(
+            drawerKeyList[i],
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 20,
+            ),
           ),
         ),
-      ),
-    )));
+      )
+    );
   }
 
   return result;
 }
 
-List<String> testDrawerList = [
-  "python",
-  "java",
-  "swift",
-  "C#",
-  "UE4",
-  "Unity",
-  "Go",
-  "iPhone",
-  "Sumsung",
-  "Non Terrae Plus Ultra",
-  "Chicken you're beautiful",
-  "How to play basketball",
-  "Ur moves like cxk",
-  "Pass ball cxk",
-  "Jackpot",
-];
+List<String> drawerList = [];
+

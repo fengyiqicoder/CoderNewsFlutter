@@ -30,6 +30,24 @@ Future<Map> getMainScreenDatas(List<String> categoryArray,int infoAmount,List<in
 }
 
 
+//检查URL
+
+String checkUrl(String str){//把#改成%23
+    var finalString = str;
+    var index = str.indexOf("#");
+    print(index);
+    while (index != -1) {
+        finalString = replaceCharAt(finalString, index, "%23");
+        index = finalString.indexOf("#");
+    }
+    return finalString;
+}
+
+String replaceCharAt(String oldString, int index, String newChar) {
+    return oldString.substring(0, index) + newChar + oldString.substring(index + 1);
+}
+
+
 
 
 

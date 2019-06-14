@@ -76,7 +76,6 @@ class FavorLableState extends State<FavorLable>{
         color: Colors.red,
       ),
       onDismissed: (direction) {
-
         favorLableList.remove(copyThis);
         testFavorList.remove(lableText);
 

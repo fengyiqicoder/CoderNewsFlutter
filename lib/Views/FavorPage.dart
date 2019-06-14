@@ -61,15 +61,26 @@ class FavorLableState extends State<FavorLable>{
         title: Text(lableText),
         subtitle: Text("keywords"),
       ),
-//      direction: DismissDirection.endToStart,
+      direction: DismissDirection.endToStart,
       background: Container(
-        child: Icon(Icons.delete, color: Colors.white,),
+        alignment: Alignment.centerRight,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text("滑动以删除",style: TextStyle(color: Colors.white,fontSize: 20),),
+            Container(width: window.physicalSize.width.toDouble() * 0.3 / window.devicePixelRatio.toDouble(),),
+            Icon(Icons.delete, color: Colors.white,)
+          ],
+        ),
         color: Colors.red,
       ),
       onDismissed: (direction) {
 
         favorLableList.remove(copyThis);
         testFavorList.remove(lableText);
+
+        print(testFavorList);
 
         Scaffold.of(context).showSnackBar(
           SnackBar(content: Text("成功删除"))
@@ -83,17 +94,6 @@ Container slidBackGround = new Container(
   child: Center(child: Text("Slid to Delete",style: TextStyle(color: Colors.white),),),
   color: Colors.red,
 );
-
-Text titleText(String string) {
-  return Text(
-    string,
-    style: TextStyle(
-      fontSize: 20,
-      color: Colors.white,
-    ),
-    overflow: TextOverflow.ellipsis,
-  );
-}
 
 List<Widget> createFavorList(List<String> targetList){
   int n = targetList.length;

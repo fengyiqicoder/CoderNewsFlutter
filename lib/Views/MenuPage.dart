@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'FavorPage.dart';
+
+BuildContext menuContext;
 
 class FloatButton extends StatefulWidget {
   @override
@@ -42,6 +45,7 @@ class MenuPage extends StatefulWidget {
 class MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
+    menuContext = context;
     return Hero(
       tag: "Menu",
       child: Scaffold(
@@ -129,7 +133,11 @@ List<Widget> MenuButtons = [
         Text("Favor"),
       ],
     ),
-    onPressed: (){},
+    onPressed: (){
+      Navigator.of(menuContext).push(MaterialPageRoute(builder: (menuContext) {
+        return FavorPage();
+      }));
+    },
   ),
 
   FlatButton(

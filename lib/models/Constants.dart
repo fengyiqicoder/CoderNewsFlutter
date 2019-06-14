@@ -20,8 +20,8 @@ class Constants{
   );
 
   //各种分类
-static const lankeywords = ["android","swift","networkSecurity","python"];
-static const techKeywords = ["computer","phone","resource","course","techArticles"];
+static const lankeywords = ["swift","java","python"];
+static const techKeywords = ["computer","phone","resource","course","techArticles","networkSecurity"];
 }
 
 class ConstantsForTile {

@@ -5,6 +5,8 @@ import 'package:share/share.dart';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../models/MainScreenModel.dart';
+
+
 MainModel mainModel;
 String theUrl;
 class NavigationControls extends StatelessWidget {
@@ -114,6 +116,17 @@ class _FavoriteWidgetState extends State<FavoriteButton> {
 
   bool isFavorite;
   Color color;
+
+  void initState() {
+    mainModel.getArray();
+    if(mainModel.likedArray.contains(theUrl)) {
+      isFavorite = true;
+    } else {
+      isFavorite = false;
+    }
+  }
+
+
 
   void setFavorite() {
     setState(() {

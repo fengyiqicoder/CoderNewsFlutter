@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:ui';
+import 'webviewPage.dart';
+
+
 
 class FavorPage extends StatefulWidget{
   @override
@@ -12,7 +15,9 @@ class FavorPageState extends State<FavorPage>{
   void initState() {
     // TODO: implement initState
     super.initState();
-    favorLableList = createFavorList(testFavorList);
+    mainModel.getArray();
+    print(mainModel.likedArray);
+    favorLableList = createFavorList(mainModel.likedArray);
   }
 
   @override
@@ -63,16 +68,17 @@ class FavorLableState extends State<FavorLable>{
       ),
       direction: DismissDirection.endToStart,
       background: Container(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text("滑动以删除",style: TextStyle(color: Colors.white,fontSize: 20),),
-            Container(width: window.physicalSize.width.toDouble() * 0.3 / window.devicePixelRatio.toDouble(),),
-            Icon(Icons.delete, color: Colors.white,)
-          ],
-        ),
+        alignment: Alignment.center,
+        child: Icon(Icons.delete, color: Colors.white,),
+//        child: Row(
+//          mainAxisSize: MainAxisSize.min,
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          children: <Widget>[
+////            Text("滑动以删除",style: TextStyle(color: Colors.white,fontSize: 20),),
+////            Container(width: window.physicalSize.width.toDouble() * 0.3 / window.devicePixelRatio.toDouble(),),
+//            Icon(Icons.delete, color: Colors.white,)
+//          ],
+//        ),
         color: Colors.red,
       ),
       onDismissed: (direction) {

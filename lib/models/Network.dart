@@ -24,11 +24,28 @@ Future<Map> getMainScreenDatas(List<String> categoryArray,int infoAmount,List<in
         }
     }
     print("getDatas $url");
+    print(categoryArrayString);
     Response response = await dio.get(url,queryParameters: { "categoryArray":categoryArrayString,"infoAmount":infoAmount,"queueHeadArray":queueHeadString });
     //转换为JSON
     return response.data;
 }
 
+
+Future<Map> getFavoriteTitle(List<String> articleUrl) async{
+    const url = "http://gianttough.cn/coder_news/findByUrl/?";
+    Dio dio = new Dio();
+    var articleUrlString = "[";
+    for (var index = 0; index < articleUrl.length; index++) {
+        var article = articleUrl[index];
+        if(index != articleUrl.length-1) {
+            articleUrlString += article + ",";
+        } else {
+            articleUrlString += article + "]";
+        }
+    }
+    Response response = await dio.get(url, queryParameters: {"urlList":articleUrlString});
+    return response.data;
+}
 
 //检查URL
 

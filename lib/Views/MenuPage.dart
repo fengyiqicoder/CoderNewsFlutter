@@ -88,10 +88,12 @@ List<Widget> MenuButtons = [
       crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
         Icon(Icons.home),
-        Text("Home"),
+        Text("主页"),
       ],
     ),
-    onPressed: (){},
+    onPressed: (){
+      Navigator.pop(menuContext);
+    },
   ),
 
   FlatButton(
@@ -130,7 +132,7 @@ List<Widget> MenuButtons = [
       crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
         Icon(Icons.favorite),
-        Text("Favor"),
+        Text("我赞过的"),
       ],
     ),
     onPressed: (){
@@ -148,7 +150,7 @@ List<Widget> MenuButtons = [
       crossAxisAlignment: WrapCrossAlignment.center,
       children: <Widget>[
         Icon(Icons.settings_ethernet),
-        Text("Settings"),
+        Text("设置"),
       ],
     ),
     onPressed: (){},

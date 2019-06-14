@@ -68,8 +68,7 @@ class _BlockPageState extends State<BlockPage> with TickerProviderStateMixin {
         Pixel;
 
     return new Scaffold(
-      drawer: LeftDrawer(
-      ),
+//      drawer: LeftDrawer(model),
         body: new Stack(
       children: <Widget>[
         GestureDetector(

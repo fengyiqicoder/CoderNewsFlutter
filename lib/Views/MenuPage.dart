@@ -96,33 +96,33 @@ List<Widget> MenuButtons = [
     },
   ),
 
-  FlatButton(
-    child: Wrap(
-      direction: Axis.vertical,
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: <Widget>[
-        Icon(Icons.view_list),
-        Text("Tops"),
-      ],
-    ),
-    onPressed: (){},
-  ),
+//  FlatButton(
+//    child: Wrap(
+//      direction: Axis.vertical,
+//      alignment: WrapAlignment.center,
+//      runAlignment: WrapAlignment.center,
+//      crossAxisAlignment: WrapCrossAlignment.center,
+//      children: <Widget>[
+//        Icon(Icons.view_list),
+//        Text("Tops"),
+//      ],
+//    ),
+//    onPressed: (){},
+//  ),
 
-  FlatButton(
-    child: Wrap(
-      direction: Axis.vertical,
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: <Widget>[
-        Icon(Icons.person),
-        Text("Self"),
-      ],
-    ),
-    onPressed: (){},
-  ),
+//  FlatButton(
+//    child: Wrap(
+//      direction: Axis.vertical,
+//      alignment: WrapAlignment.center,
+//      runAlignment: WrapAlignment.center,
+//      crossAxisAlignment: WrapCrossAlignment.center,
+//      children: <Widget>[
+//        Icon(Icons.person),
+//        Text("Self"),
+//      ],
+//    ),
+//    onPressed: (){},
+//  ),
 
   FlatButton(
     child: Wrap(
@@ -142,17 +142,17 @@ List<Widget> MenuButtons = [
     },
   ),
 
-  FlatButton(
-    child: Wrap(
-      direction: Axis.vertical,
-      alignment: WrapAlignment.center,
-      runAlignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: <Widget>[
-        Icon(Icons.settings_ethernet),
-        Text("设置"),
-      ],
-    ),
-    onPressed: (){},
-  ),
+//  FlatButton(
+//    child: Wrap(
+//      direction: Axis.vertical,
+//      alignment: WrapAlignment.center,
+//      runAlignment: WrapAlignment.center,
+//      crossAxisAlignment: WrapCrossAlignment.center,
+//      children: <Widget>[
+//        Icon(Icons.settings_ethernet),
+//        Text("设置"),
+//      ],
+//    ),
+//    onPressed: (){},
+//  ),
 ];

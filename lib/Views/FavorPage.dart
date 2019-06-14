@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:ui';
+import '../models/MainScreenModel.dart';
+import 'BlockPage.dart';
 import 'webviewPage.dart';
-
+import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
 
 class FavorPage extends StatefulWidget{
@@ -12,12 +15,19 @@ class FavorPage extends StatefulWidget{
 
 class FavorPageState extends State<FavorPage>{
   @override
+
   void initState() {
     // TODO: implement initState
     super.initState();
-    mainModel.getArray();
-    print(mainModel.likedArray);
-    favorLableList = createFavorList(mainModel.likedArray);
+    print(model.likedArray);
+    createList();
+  }
+
+  void createList() async{
+    var title = await model.getFavoriteTitle(model.likedArray);
+    favorLableList = createFavorList(title);
+    print(title);
+    setState(() {});
   }
 
   @override
@@ -41,21 +51,31 @@ class FavorPageState extends State<FavorPage>{
 }
 
 class FavorLable extends StatefulWidget{
-  FavorLable(this.lableText,this.index);
+  FavorLable(this.lableText,this.index, this.url);
 
   String lableText;
   int index;
+  String url;
 
   @override
-  State<StatefulWidget> createState() => FavorLableState(lableText,index,this);
+  State<StatefulWidget> createState() => FavorLableState(lableText,index,this, url);
 }
 
 class FavorLableState extends State<FavorLable>{
-  FavorLableState(this.lableText,this.index,this.copyThis);
+  FavorLableState(this.lableText,this.index,this.copyThis, this.url);
 
   String lableText;
   int index;
   var copyThis;
+  String url;
+  bool isFavorite = true;
+
+  // WebViewController
+  Completer<WebViewController> _controller;
+
+  void initState() {
+    _controller = Completer<WebViewController>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +84,31 @@ class FavorLableState extends State<FavorLable>{
       key: Key(lableText),
       child: ListTile(
         title: Text(lableText),
-        subtitle: Text("keywords"),
+        subtitle: Text(url),
+        onTap: () {
+          print("url to show $url");
+          Navigator.push(context, new MaterialPageRoute(builder: (context) {
+            return new Scaffold(
+              appBar: AppBar(
+                title: Text(lableText),
+                leading: NavigationControls(_controller.future,url,model),
+                actions: <Widget>[
+                  Menu(_controller.future, url)
+                ],
+              ),
+              floatingActionButton: FavoriteButton(isFavorite, Colors.blue),
+              body: new WebView(
+                initialUrl: url,
+                javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  if(! _controller.isCompleted) {
+                    _controller.complete(webViewController);
+                  }
+                },
+              ),
+            );
+          }));
+        },
       ),
       direction: DismissDirection.endToStart,
       background: Container(
@@ -82,8 +126,10 @@ class FavorLableState extends State<FavorLable>{
         color: Colors.red,
       ),
       onDismissed: (direction) {
-        favorLableList.remove(copyThis);
-        testFavorList.remove(lableText);
+        model.likedArray.remove(url);
+        model.saveArrays();
+
+        favorLableList.remove(lableText);
 
         print(testFavorList);
 
@@ -105,11 +151,13 @@ List<Widget> createFavorList(List<String> targetList){
   List<Widget> result = [];
 
   for(int i = 0; i < n; i ++){
-    result.add(FavorLable( targetList[i],i));
+    result.add(FavorLable( targetList[i],i, model.likedArray[i]));
   }
 
   return result;
 }
+
+
 
 List<Widget> favorLableList = [];
 

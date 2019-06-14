@@ -185,6 +185,16 @@ class MainModel{
     return result;
   }
 
+  Future<List<String>> getFavoriteTitle(List<String> likedUrl) async {
+    var JsonData = await getFavoriteTitleData(likedUrl);
+    List jsonArray = JsonData["data"];
+    List<String> result = [];
+    jsonArray.forEach((data){
+      result.add(data["title"]);
+    });
+    return result;
+  }
+
 }
 
 

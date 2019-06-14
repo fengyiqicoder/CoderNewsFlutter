@@ -31,7 +31,7 @@ Future<Map> getMainScreenDatas(List<String> categoryArray,int infoAmount,List<in
 }
 
 
-Future<Map> getFavoriteTitle(List<String> articleUrl) async{
+Future<Map> getFavoriteTitleData(List<String> articleUrl) async{
     const url = "http://gianttough.cn/coder_news/findByUrl/?";
     Dio dio = new Dio();
     var articleUrlString = "[";

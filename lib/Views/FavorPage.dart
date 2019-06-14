@@ -42,14 +42,15 @@ class FavorLable extends StatefulWidget{
   int index;
 
   @override
-  State<StatefulWidget> createState() => FavorLableState(lableText,index);
+  State<StatefulWidget> createState() => FavorLableState(lableText,index,this);
 }
 
 class FavorLableState extends State<FavorLable>{
-  FavorLableState(this.lableText,this.index);
+  FavorLableState(this.lableText,this.index,this.copyThis);
 
   String lableText;
   int index;
+  var copyThis;
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +68,8 @@ class FavorLableState extends State<FavorLable>{
       ),
       onDismissed: (direction) {
 
-        favorLableList.remove(this);
+        favorLableList.remove(copyThis);
         testFavorList.remove(lableText);
-        this.dispose();
 
         Scaffold.of(context).showSnackBar(
           SnackBar(content: Text("成功删除"))

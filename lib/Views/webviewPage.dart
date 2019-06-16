@@ -32,7 +32,7 @@ class NavigationControls extends StatelessWidget {
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.arrow_back_ios),
-              onPressed: !webViewReady ? null : () {navigate(context, controller, goBack: true);},
+              onPressed: () {navigate(context, controller, goBack: true);},
             ),
           ],
         );
@@ -66,7 +66,7 @@ class Menu extends StatelessWidget {
     return FutureBuilder(
       future: _webViewControllerFuture,
       builder: (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-        if(!controller.hasData) return new Container();
+//        if(!controller.hasData) return new Container();
         return PopupMenuButton<String>(
           itemBuilder: (BuildContext context) => <PopupMenuItem<String>> [
             const PopupMenuItem(
@@ -82,11 +82,11 @@ class Menu extends StatelessWidget {
             var currentUrl = await controller.data.currentUrl();
             if(value == "share") {
               print(currentUrl);
-              Share.share(currentUrl);
+              Share.share(url);
             }
             if(value == "openInBrowser") {
-              print(currentUrl);
-              launch(currentUrl);
+              print(url);
+              launch(url);
             }
           },
         );

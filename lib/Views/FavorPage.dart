@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:ui';
+import 'BlockPage.dart';
 import 'webviewPage.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
-
-
-class FavorPage extends StatefulWidget{
+class FavorPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => FavorPageState();
 }
 
-class FavorPageState extends State<FavorPage>{
+class FavorPageState extends State<FavorPage> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    mainModel.getArray();
-    print(mainModel.likedArray);
-    favorLableList = createFavorList(mainModel.likedArray);
+    print(model.likedArray);
+    createList();
+  }
+
+  void createList() async {
+    var title = await model.getFavoriteTitle(model.likedArray);
+    print(title);
+    favorLableList = createFavorList(title);
+
+    setState(() {});
   }
 
   @override
@@ -40,36 +48,71 @@ class FavorPageState extends State<FavorPage>{
   }
 }
 
-class FavorLable extends StatefulWidget{
-  FavorLable(this.lableText,this.index);
+class FavorLabel extends StatefulWidget {
+  FavorLabel(this.labelText, this.index, this.url);
 
-  String lableText;
+  String labelText;
   int index;
+  String url;
 
   @override
-  State<StatefulWidget> createState() => FavorLableState(lableText,index,this);
+  State<StatefulWidget> createState() =>
+      FavorLabelState(labelText, index, this, url);
 }
 
-class FavorLableState extends State<FavorLable>{
-  FavorLableState(this.lableText,this.index,this.copyThis);
+class FavorLabelState extends State<FavorLabel> {
+  FavorLabelState(this.labelText, this.index, this.copyThis, this.url);
 
-  String lableText;
+  String labelText;
   int index;
   var copyThis;
+  String url;
+  bool isFavorite = true;
+
+  // WebViewController
+  Completer<WebViewController> _controller;
+
+  void initState() {
+    _controller = Completer<WebViewController>();
+  }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Dismissible(
-      key: Key(lableText),
+      key: Key(labelText),
       child: ListTile(
-        title: Text(lableText),
-        subtitle: Text("keywords"),
+        title: Text(labelText),
+        subtitle: Text(url),
+        onTap: () {
+          print("url to show $url");
+          Navigator.push(context, new MaterialPageRoute(builder: (context) {
+            return new Scaffold(
+              appBar: AppBar(
+                title: Text(labelText),
+                leading: NavigationControls(_controller.future, url, model),
+                actions: <Widget>[Menu(_controller.future, url)],
+              ),
+              body: new WebView(
+                initialUrl: url,
+                javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  if (!_controller.isCompleted) {
+                    _controller.complete(webViewController);
+                  }
+                },
+              ),
+            );
+          }));
+        },
       ),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.center,
-        child: Icon(Icons.delete, color: Colors.white,),
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
 //        child: Row(
 //          mainAxisSize: MainAxisSize.min,
 //          mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,30 +125,35 @@ class FavorLableState extends State<FavorLable>{
         color: Colors.red,
       ),
       onDismissed: (direction) {
-        favorLableList.remove(copyThis);
-        testFavorList.remove(lableText);
+        model.likedArray.remove(url);
+        model.saveArrays();
+
+        favorLableList.remove(labelText);
 
         print(testFavorList);
 
-        Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text("成功删除"))
-        );
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text("成功删除")));
       },
     );
   }
 }
 
 Container slidBackGround = new Container(
-  child: Center(child: Text("Slid to Delete",style: TextStyle(color: Colors.white),),),
+  child: Center(
+    child: Text(
+      "Slide to Delete",
+      style: TextStyle(color: Colors.white),
+    ),
+  ),
   color: Colors.red,
 );
 
-List<Widget> createFavorList(List<String> targetList){
+List<Widget> createFavorList(List<String> targetList) {
   int n = targetList.length;
   List<Widget> result = [];
 
-  for(int i = 0; i < n; i ++){
-    result.add(FavorLable( targetList[i],i));
+  for (int i = 0; i < n; i++) {
+    result.add(FavorLabel(targetList[i], i, model.likedArray[i]));
   }
 
   return result;

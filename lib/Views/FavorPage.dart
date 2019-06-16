@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:ui';
-import '../models/MainScreenModel.dart';
 import 'BlockPage.dart';
 import 'webviewPage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -94,7 +93,6 @@ class FavorLabelState extends State<FavorLabel> {
                 leading: NavigationControls(_controller.future, url, model),
                 actions: <Widget>[Menu(_controller.future, url)],
               ),
-              floatingActionButton: FavoriteButton(isFavorite, Colors.blue),
               body: new WebView(
                 initialUrl: url,
                 javascriptMode: JavascriptMode.unrestricted,
@@ -143,7 +141,7 @@ class FavorLabelState extends State<FavorLabel> {
 Container slidBackGround = new Container(
   child: Center(
     child: Text(
-      "Slid to Delete",
+      "Slide to Delete",
       style: TextStyle(color: Colors.white),
     ),
   ),

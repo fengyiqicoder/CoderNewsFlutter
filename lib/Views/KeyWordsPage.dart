@@ -46,6 +46,7 @@ class KeyWordsPageState extends State<KeyWordsPage> {
             style: TextStyle(color: Colors.blue,),
           ),
           onPressed: () {
+
             Navigator.of(context).pop();
             print(chooseResult);
             choosedList.clear();
@@ -53,6 +54,10 @@ class KeyWordsPageState extends State<KeyWordsPage> {
             for(int i = 0; i < n; i++){
               choosedList.add(chooseResult[i]);
             }
+            //储存到Model
+            print("choosedList");
+            print(choosedList);
+            model.updateCategoryArray(choosedList);
             chooseResult.clear();
             Navigator.of(copyContext).pop();
             drawerList = choosedList;
@@ -83,10 +88,9 @@ class KeyWordsPageState extends State<KeyWordsPage> {
             style: TextStyle(color: Colors.blue,),
           ),
           onPressed: () {
+
             Navigator.of(context).pop();
-            //储存到Model
-            model.updateCategoryArray(choosedList);
-            print(choosedList);
+
             chooseResult.clear();
             Navigator.of(copyContext).pop();
           },

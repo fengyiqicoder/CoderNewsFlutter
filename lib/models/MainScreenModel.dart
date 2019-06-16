@@ -65,19 +65,26 @@ class MainModel{
   }
 
   void updateCategoryArray(newString){
+//    for (var str in newString){
+//      var doNotHave = true;
+//      for (var oldStr in currentCategoryArray){
+//        if (oldStr == str){
+//          doNotHave = false;
+//          break;
+//        }
+//      }
+//      if (doNotHave == true){
+//        currentCategoryArray.add(str);
+//        currentQueueHeadArray.add(1);
+//      }
+//    }
+    currentCategoryArray = newString;
+    currentQueueHeadArray = [];
     for (var str in newString){
-      var doNotHave = true;
-      for (var oldStr in currentCategoryArray){
-        if (oldStr == str){
-          doNotHave = false;
-          break;
-        }
-      }
-      if (doNotHave == true){
-        currentCategoryArray.add(str);
-        currentQueueHeadArray.add(1);
-      }
+      currentQueueHeadArray.add(1);
     }
+    print("currentQueueHeadArray");
+    print(currentQueueHeadArray);
     saveArrays();
   }
 
@@ -172,6 +179,8 @@ class MainModel{
           break;
         }
       }
+      print("QueueHead");
+      print(currentQueueHeadArray);
 //      print(data);
       var id = data["infoId"].toString();
       var height = tileList[indexForData].mainAxisCellCount;

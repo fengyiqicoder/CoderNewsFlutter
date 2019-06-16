@@ -21,7 +21,7 @@ class Constants{
 
   //各种分类
 static const lankeywords = ["swift","java","python"];
-static const techKeywords = ["Technology","NetworkSecurity"];
+static const techKeywords = ["Computer", "Phone", "TechnologyArticles", "AppSolution", "ResourceRecommend"];
 }
 
 class ConstantsForTile {

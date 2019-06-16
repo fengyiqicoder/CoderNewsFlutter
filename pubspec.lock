@@ -69,13 +69,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.4.6"
-  flutter_spinkit:
+  flutter_slidable:
     dependency: "direct main"
     description:
-      name: flutter_spinkit
+      name: flutter_slidable
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.0"
+    version: "0.5.3"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -88,13 +88,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_webview_plugin:
-    dependency: "direct main"
-    description:
-      name: flutter_webview_plugin
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.3.5"
   matcher:
     dependency: transitive
     description:

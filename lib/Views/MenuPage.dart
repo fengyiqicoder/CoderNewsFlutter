@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'FavorPage.dart';
 import 'SettingPage.dart';
+import 'TopsPage.dart';
 
 BuildContext menuContext;
 
@@ -97,19 +98,23 @@ List<Widget> MenuButtons = [
     },
   ),
 
-//  FlatButton(
-//    child: Wrap(
-//      direction: Axis.vertical,
-//      alignment: WrapAlignment.center,
-//      runAlignment: WrapAlignment.center,
-//      crossAxisAlignment: WrapCrossAlignment.center,
-//      children: <Widget>[
-//        Icon(Icons.view_list),
-//        Text("Tops"),
-//      ],
-//    ),
-//    onPressed: (){},
-//  ),
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.view_list),
+        Text("排行榜"),
+      ],
+    ),
+    onPressed: (){
+      Navigator.of(menuContext).push(MaterialPageRoute(builder: (menuContext) {
+        return TopsPage();
+      }));
+    },
+  ),
 
 //  FlatButton(
 //    child: Wrap(

@@ -110,7 +110,7 @@ class FavorLabelState extends State<FavorLabel> {
       background: Container(
         alignment: Alignment.center,
         child: Icon(
-          Icons.delete,
+          Icons.delete_forever,
           color: Colors.white,
         ),
 //        child: Row(

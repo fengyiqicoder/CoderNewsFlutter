@@ -58,49 +58,47 @@ class LeftDrawerState extends State<LeftDrawer> {
         child: Material(
           color: color,
           elevation: elevation,
-          child: SafeArea(
-            child: Flex(
-              direction: Axis.vertical,
-              children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  height: window.physicalSize.height.toDouble() / window.devicePixelRatio.toDouble() - 150,
+          child: Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              Container(
+                color: Colors.white,
+                height: window.physicalSize.height.toDouble() / window.devicePixelRatio.toDouble() - 150,
 
-                    child: ListView(
-                      itemExtent: 40,
-                      children: createDrawerKeyLable(drawerList),
-                    ),
+                child: ListView(
+                  itemExtent: 40,
+                  children: createDrawerKeyLable(drawerList),
                 ),
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Flex(
-                        direction: Axis.vertical,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          RaisedButton(
-                            shape: CircleBorder(),
-                            child: Icon(
-                              Icons.edit,
-                              size: 30,
-                            ),
-                            color: Colors.pinkAccent,
-                            textColor: Colors.white,
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                                return KeyWordsPage(this,drawerList,model);
-                              }));
-                            },
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: Flex(
+                      direction: Axis.vertical,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        RaisedButton(
+                          shape: CircleBorder(),
+                          child: Icon(
+                            Icons.edit,
+                            size: 30,
                           ),
-                          Text("Add key")
-                        ],
-                      ),
+                          color: Colors.pinkAccent,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                              return KeyWordsPage(this,drawerList,model);
+                            }));
+                          },
+                        ),
+                        Text("Add key")
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

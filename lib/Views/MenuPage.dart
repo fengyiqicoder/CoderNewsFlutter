@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'FavorPage.dart';
+import 'SettingPage.dart';
 
 BuildContext menuContext;
 
@@ -142,17 +143,21 @@ List<Widget> MenuButtons = [
     },
   ),
 
-//  FlatButton(
-//    child: Wrap(
-//      direction: Axis.vertical,
-//      alignment: WrapAlignment.center,
-//      runAlignment: WrapAlignment.center,
-//      crossAxisAlignment: WrapCrossAlignment.center,
-//      children: <Widget>[
-//        Icon(Icons.settings_ethernet),
-//        Text("设置"),
-//      ],
-//    ),
-//    onPressed: (){},
-//  ),
+  FlatButton(
+    child: Wrap(
+      direction: Axis.vertical,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: <Widget>[
+        Icon(Icons.settings_ethernet),
+        Text("设置"),
+      ],
+    ),
+    onPressed: (){
+      Navigator.of(menuContext).push(MaterialPageRoute(builder: (menuContext) {
+        return SettingPage();
+      }));
+    },
+  ),
 ];

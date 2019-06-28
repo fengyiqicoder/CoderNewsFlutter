@@ -63,10 +63,7 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _webViewControllerFuture,
-      builder: (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-//        if(!controller.hasData) return new Container();
+
         return PopupMenuButton<String>(
           itemBuilder: (BuildContext context) => <PopupMenuItem<String>> [
             const PopupMenuItem(
@@ -79,9 +76,8 @@ class Menu extends StatelessWidget {
             )
           ],
           onSelected: (String value) async {
-            var currentUrl = await controller.data.currentUrl();
             if(value == "share") {
-              print(currentUrl);
+              print(url);
               Share.share(url);
             }
             if(value == "openInBrowser") {
@@ -90,8 +86,7 @@ class Menu extends StatelessWidget {
             }
           },
         );
-      },
-    );
+
   }
 
 }

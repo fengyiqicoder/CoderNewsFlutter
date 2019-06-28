@@ -748,59 +748,17 @@ List<Color> topTilesBgcolor = [
 
 List<CardSection> allSections = <CardSection>[
   new CardSection(
-      title: 'First Page',
+      title: 'Swift',
       leftColor: _mediumPurple,
       rightColor: _mediumPurple,
       child: SingleChildScrollView(
-        child: Column(children: <Widget>[
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-          ListTile(
-            title: Text("Non Terrae Plus Ultra"),
-            subtitle: Text("Test Data"),
-          ),
-
-
-        ],),
+        child: Column(
+          children: createToptiles(topTilestext0),
+        ),
       )
   ),
   new CardSection(
-      title: 'Second Page',
+      title: '科技',
       leftColor: _mySin,
       rightColor: _mySin,
       child: SingleChildScrollView(
@@ -809,10 +767,14 @@ List<CardSection> allSections = <CardSection>[
         ),
       )),
   new CardSection(
-      title: 'Third Page',
+      title: 'Python',
       leftColor: _tomato,
       rightColor: _tomato,
-      child: Center(child: new Text('第三页'))),
+      child: SingleChildScrollView(
+        child: Column(
+          children: createToptiles(topTilestext2),
+        ),
+      )),
 //  new CardSection(
 //      title: 'Forth Page',
 //      leftColor: _tomato,
@@ -857,3 +819,27 @@ List<String> topTilestext1 = [
   "Google Glass 企业版第二代发布，支持 Android 移动设备管理",
   "亚马逊股东向公司施压，试图禁止向政府销售面部识别相关产品",
 ];
+
+List<String> topTilestext2 = [
+  "The Meson Build System mesonbuild/meson",
+  "Interactive Web Plotting for Python bokeh/bokeh",
+  "DinoMan/speech-driven-animation",
+  "增强版WeblogicScan、检测结果更精确、插件化、添加CVE-2019-2618，CVE-2019-2729检测，Python3支持 dr0op/WeblogicScan",
+  "Official Python low-level client for Elasticsearch. elastic/elasticsearch-py",
+  "AV元数据抓取工具，配合kodi,emby等本地媒体管理工具使用 wenead99/AV_Data_Capture",
+  "Google Sheets Python API burnash/gspread"
+
+];
+
+List<String> topTilestext0 = [
+  "SwiftUI & Combine app using MovieDB API. With a custom Flux (Redux) implementation. Dimillian/MovieSwiftUI",
+  "NFCPassportReader for iOS 13 AndyQ/NFCPassportReader",
+  "Cuberto/liquid-swipe",
+  "Swift for TensorFlow Deep Learning Library tensorflow/swift-apis",
+  "A Swift web framework and HTTP server. IBM-Swift/Kitura",
+  "Turn On your VPN like a hero. lexrus/VPNOn"
+  "I Am Poor Skeleton Project for iOS App Development Bootcamp londonappbrewery/I-Am-Poor-iOS12",
+  "Курс «Разработка под iOS.Начинаем» ya-on-ios/course1"
+
+];
+

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:flutter/rendering.dart';
+import '../models/Constants.dart';
 
-const Color _kAppBackgroundColor = const Color(0xFF20c2f0);
+const Color _kAppBackgroundColor = const Color(0xFFCCCBCB); //侧条和整个板块的底背景色
 const Duration _kScrollDuration = const Duration(milliseconds: 400);
 const Curve _kScrollCurve = Curves.fastOutSlowIn;
 const double _kAppBarMinHeight = 60.0;
@@ -399,10 +400,10 @@ class _AnimateTabNavigationState extends State<AnimateTabNavigation> {
   }
 
   void _handleBackButton(double midScrollOffset) {
-    if (_scrollController.offset >= midScrollOffset)
+    if(_scrollController.offset >= midScrollOffset)
       _scrollController.animateTo(0.0, curve: _kScrollCurve, duration: _kScrollDuration);
     else
-      Navigator.maybePop(context);
+      _scrollController.animateTo(556.0, curve: _kScrollCurve, duration: _kScrollDuration);
   }
 
   // Only enable paging for the heading when the user has scrolled to midScrollOffset.
@@ -552,7 +553,7 @@ class _AnimateTabNavigationState extends State<AnimateTabNavigation> {
                         children: sectionList.map((CardSection section) {
                           return Container(
 //                            color: Colors.green,
-                              child: section.contentWidget);
+                              child: section.child);
                         }).toList(),
                       ),
                     ),
@@ -570,8 +571,8 @@ class _AnimateTabNavigationState extends State<AnimateTabNavigation> {
                 top: false,
                 bottom: false,
                 child: new IconButton(
-                    icon: _expanded ? new Icon(Icons.list) : new Icon(Icons.ac_unit),
-                    tooltip: 'Back',
+                    icon: _expanded ? new Icon(Icons.view_carousel) : new Icon(Icons.format_list_bulleted),
+//                    tooltip: 'Back',
                     onPressed: () {
                       _handleBackButton(appBarMinScrollOffset);
                     }),
@@ -585,12 +586,12 @@ class _AnimateTabNavigationState extends State<AnimateTabNavigation> {
 }
 
 class CardSection {
-  CardSection({this.title, this.leftColor, this.rightColor, this.contentWidget});
+  CardSection({this.title, this.leftColor, this.rightColor, this.child});
 
   final String title;
   final Color leftColor;
   final Color rightColor;
-  final Widget contentWidget;
+  final Widget child;
 
   @override
   bool operator ==(Object other) {
@@ -724,36 +725,135 @@ class TopsPageState extends State<TopsPage>{
 }
 
 
+
+
 //test datas
 const Color _mariner = const Color(0xFF3B5F8F);
 const Color _mediumPurple = const Color(0xFF8266D4);
 const Color _tomato = const Color(0xFFF95B57);
 const Color _mySin = const Color(0xFFF3A646);
 
+List<Color> topTilesBgcolor = [
+  Color(0xFF3B5F8F),
+  Color(0xFF8266D4),
+  Color(0xFFF95B57),
+  Color(0xFFF3A646),
+  Color(0xFF077678),
+  Color(0xFF4A90E2),
+  Color(0xFF89A601),
+  Color(0xFFA715A4),
+  Color(0xFF640F09),
+  Color(0xFFFFF77C),
+];
+
 List<CardSection> allSections = <CardSection>[
   new CardSection(
       title: 'First Page',
       leftColor: _mediumPurple,
-      rightColor: _mariner,
-      contentWidget: Center(child: new Text('第一页'))),
+      rightColor: _mediumPurple,
+      child: SingleChildScrollView(
+        child: Column(children: <Widget>[
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+          ListTile(
+            title: Text("Non Terrae Plus Ultra"),
+            subtitle: Text("Test Data"),
+          ),
+
+
+        ],),
+      )
+  ),
   new CardSection(
       title: 'Second Page',
-      leftColor: _mariner,
+      leftColor: _mySin,
       rightColor: _mySin,
-      contentWidget: Center(child: new Text('第二页'))),
+      child: SingleChildScrollView(
+        child: Column(
+          children: createToptiles(topTilestext1),
+        ),
+      )),
   new CardSection(
       title: 'Third Page',
-      leftColor: _mySin,
-      rightColor: _tomato,
-      contentWidget: Center(child: new Text('第三页'))),
-  new CardSection(
-      title: 'Forth Page',
       leftColor: _tomato,
-      rightColor: Colors.blue,
-      contentWidget: Center(child: new Text('第四页'))),
-  new CardSection(
-      title: 'Fifth Page',
-      leftColor: Colors.blue,
-      rightColor: _mediumPurple,
-      contentWidget: Center(child: new Text('第五页'))),
+      rightColor: _tomato,
+      child: Center(child: new Text('第三页'))),
+//  new CardSection(
+//      title: 'Forth Page',
+//      leftColor: _tomato,
+//      rightColor: Colors.pinkAccent,
+//      contentWidget: Center(child: new Text('第四页'))),
+//  new CardSection(
+//      title: 'Fifth Page',
+//      leftColor: Colors.blue,
+//      rightColor: _mediumPurple,
+//      contentWidget: Center(child: new Text('第五页'))),
+//  new CardSection(
+//      title: 'Sixth Page',
+//      leftColor: Colors.grey,
+//      rightColor: _mediumPurple,
+//      contentWidget: Center(child: new Text('第五页'))),
+];
+
+List<Widget> createToptiles (List<String> topTilestext){
+  int n = topTilestext.length;
+
+  List<Widget> result = [];
+
+  for(int i = 0; i < n; i++){
+    result.add(ListTile(
+      leading: CircleAvatar(child: Text((i + 1).toString(),style: TextStyle(color: Colors.white),),backgroundColor: topTilesBgcolor[i],),
+      title: Text(topTilestext[i],overflow: TextOverflow.ellipsis,),
+    ));
+  }
+
+  return result;
+}
+
+List<String> topTilestext1 = [
+  "中国移动首张5G元素电话卡",
+  "游戏适龄提示倡议",
+  "5G室内基站",
+  "你每天用来涨知识的App有哪些",
+  "如何解读《EVA》",
+  "苹果 6 月 4 日凌晨举行年度开发者大会，今年产品会有哪些新变化?",
+  "大公司头条：英国芯片公司 ARM 停止与华为合作，影响后续研发",
+  "Facebook 想用人工智能审核不良内容，CTO 认为这并不能解决问题",
+  "Google Glass 企业版第二代发布，支持 Android 移动设备管理",
+  "亚马逊股东向公司施压，试图禁止向政府销售面部识别相关产品",
 ];
